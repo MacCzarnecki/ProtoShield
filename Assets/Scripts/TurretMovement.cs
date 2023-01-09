@@ -14,7 +14,7 @@ public class TurretMovement : MonoBehaviour
     {
         direction = new Vector3(Random.Range(-1.0f, 1.0f) ,Random.Range(-1.0f, 1.0f), 0.0f);
         direction.Normalize();
-        offset = Vector3.Cross(direction, Vector3.back) * Random.Range(-0.2f, 0.2f);
+        offset = Vector3.Cross(direction, Vector3.back) * Random.Range(-0.1f, 0.1f);
     }
 
     // Update is called once per frame
@@ -25,20 +25,10 @@ public class TurretMovement : MonoBehaviour
         newDirection.Normalize();
         Vector3 newPosition = transform.position + newDirection * speed;
         if(isInCameraRange(newPosition.x, newPosition.y))
-        {
-            direction += offset;
-            direction.Normalize();
-            transform.position += direction * speed;
-        }
-        else
-        {
-            Debug.Log("Hit Bound");
-            offset = -offset;
-            direction = -direction;
-            direction += offset;
-            direction.Normalize();
-            transform.position += direction * speed;
-        }
+            //Debug.Log("Hit bound");
+        direction += offset;
+        direction.Normalize();
+        transform.position += direction * speed;
     }
 
     bool isInCameraRange(float x, float y)
@@ -47,10 +37,17 @@ public class TurretMovement : MonoBehaviour
         float screenAspect = (float)Screen.width / (float)Screen.height;
         float cameraHeight = Camera.main.orthographicSize + cameraPosition.y;
         float cameraWidth = screenAspect * Camera.main.orthographicSize + cameraPosition.x;
-        if(y > cameraHeight || y <  -cameraHeight)
+        Debug.Log(cameraWidth.ToString() + cameraHeight.ToString());
+        if(y > cameraHeight / 2 || y <  -(cameraHeight/ 2))
+        {
+            direction.y = -direction.y;
             return false;
-        if(x > cameraWidth || x < -cameraWidth)
+        }
+        if(x > cameraWidth / 2 || x < -(cameraWidth / 2))
+        {
+            direction.x = -direction.x;
             return false;
+        }
         return true;
     }
 }

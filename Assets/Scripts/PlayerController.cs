@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
         hearts = new GameObject[maxHealth];
         for(int i = 0; i < hearts.Length; i++)
         {
-            hearts[i] = Instantiate(heart, new Vector3(3.0f - 0.5f * i, 1.0f, 0.0f), Quaternion.identity);
+            hearts[i] = Instantiate(heart, new Vector3(7.0f - 1.0f * i, 3.0f, 0.0f), Quaternion.identity);
         }
     }
     void Start()
@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     private void Die()
     {
         animator.Play("Death", 0);
+        transform.GetChild(0).gameObject.SetActive(false);
         Destroy(gameObject, animator.GetCurrentAnimatorClipInfo(0)[0].clip.length);
     }
 

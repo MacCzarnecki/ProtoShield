@@ -18,12 +18,13 @@ public class Aim : MonoBehaviour
     private void Awake() 
     {
         animator = GetComponent<Animator>();
-        countdownStart = Time.time;
+        //countdownStart = 0.0f;
     }
 
     private void Update() {
         if(animator.GetCurrentAnimatorClipInfo(0).Length == 0 || animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Teleporting")
         {
+            countdownStart = 0.0f;
             if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
             {
                 Destroy(gameObject);
@@ -43,6 +44,8 @@ public class Aim : MonoBehaviour
             }
             else if(animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Ready")
             {
+                if(countdownStart == 0.0f)
+                    countdownStart = Time.time;
                 LeadLazer(direction, true);
             }
         }
@@ -65,7 +68,7 @@ public class Aim : MonoBehaviour
         else
         {
             float frame = animator.GetCurrentAnimatorStateInfo(0).normalizedTime % 1.0f;
-            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.5f)
+            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 5.0f)
             {
                 player.GetComponent<PlayerController>().TakeDamage();
                 animator.Play("Firing", 0);
@@ -117,13 +120,12 @@ public class Aim : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public string AnimationState()
+    {
+        return animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+    }
     public float returnTime()
     {
         return Time.time - countdownStart;   
-    }
-
-    public Vector3 GetCollisionVector()
-    {
-        return hit.point;
     }
 }

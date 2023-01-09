@@ -24,9 +24,11 @@ public class Scheduler : MonoBehaviour
     public List<float> measuredTime;
 
     public string currentTime;
+    public float countdownStart;
 
     void Awake()
     {
+        countdownStart = 0.0f;
         player = Instantiate(_player, Vector3.zero, Quaternion.identity);
         player.GetComponentInChildren<DrawCircle>().degrees = SceneParameters.ShieldDegrees;
         player.GetComponentInChildren<ShieldController>().control = SceneParameters.control;
@@ -77,6 +79,15 @@ public class Scheduler : MonoBehaviour
             // }))
             if(enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Teleporting")
                makeNewTurret(); 
+            if(enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Ready")
+            {
+                if(countdownStart == 0.0f)
+                    countdownStart = Time.time;
+            }
+            if(countdownStart != 0.0f)
+                currentTime = (Time.time - countdownStart).ToString() + " s\nDistance angle: " + distanceAngle[distanceAngle.Count-1];
+            else
+                currentTime = countdownStart.ToString() + " s\nDistance angle: " + distanceAngle[distanceAngle.Count-1];
             /*if(enemies.Count < 1)
                 makeNewTurret();
             if(enemies[0] == null)
@@ -156,18 +167,24 @@ public class Scheduler : MonoBehaviour
 
     void onClick()
     {
-        //for(int i = 0; i < enemies.Count; i++)
-        //{
-            if(enemy != null && enemy.GetComponent<Aim>().onBlock)
-            {
-                measuredTime.Add(enemy.GetComponent<Aim>().returnTime());
-                lightnings.Add(Instantiate(lightning, Vector3.zero, Quaternion.identity));
-                lightnings.Add(Instantiate(lightning, Vector3.zero, Quaternion.identity));
-                lightnings[lightnings.Count - 1].GetComponent<LightningBolt>().SetRenderer(player.transform.position, enemy.GetComponent<Aim>().GetCollisionVector(), true);
-                lightnings[lightnings.Count - 2].GetComponent<LightningBolt>().SetRenderer(player.transform.position, enemy.GetComponent<Aim>().GetCollisionVector(), false);
-                Instantiate<GameObject>(Spark, enemy.GetComponent<Aim>().GetHitPoint(), enemy.transform.rotation);
-                enemy.GetComponent<Aim>().Shoot();
-            }
-        //}
+        if(enemy != null && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Ready")
+        {
+            countdownStart = 0.0f;
+            measuredTime.Add(float.PositiveInfinity);
+            Instantiate<GameObject>(Spark, player.transform.position, enemy.transform.rotation);
+            player.GetComponent<PlayerController>().TakeDamage();
+            enemy.GetComponent<Aim>().Shoot();
+        }
+        if(enemy != null && enemy.GetComponent<Aim>().onBlock)
+        {
+            countdownStart = 0.0f;
+            measuredTime.Add(enemy.GetComponent<Aim>().returnTime());
+            lightnings.Add(Instantiate(lightning, Vector3.zero, Quaternion.identity));
+            lightnings.Add(Instantiate(lightning, Vector3.zero, Quaternion.identity));
+            lightnings[lightnings.Count - 1].GetComponent<LightningBolt>().SetRenderer(player.transform.position, enemy.GetComponent<Aim>().GetHitPoint(), true);
+            lightnings[lightnings.Count - 2].GetComponent<LightningBolt>().SetRenderer(player.transform.position, enemy.GetComponent<Aim>().GetHitPoint(), false);
+            Instantiate<GameObject>(Spark, enemy.GetComponent<Aim>().GetHitPoint(), enemy.transform.rotation);
+            enemy.GetComponent<Aim>().Shoot();
+        }
     }
 }
