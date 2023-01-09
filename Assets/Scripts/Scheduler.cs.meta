@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 3ebced9d6952668478a9403d78ffc82d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - player: {fileID: 2237101071001836942, guid: 652f5ce014902af44a48536c010d745c, type: 3}
+  - turret: {fileID: 296037464215600780, guid: b37898315454f854494f23712c45f27b, type: 3}
+  - lightning: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

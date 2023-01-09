@@ -12,10 +12,10 @@ TagManager:
   - Water
   - UI
   - 
-  - 
-  - 
-  - 
-  - 
+  - PostProcess
+  - Lightning
+  - Buttons
+  - Player
   - 
   - 
   - 
@@ -38,6 +38,21 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 1192268869
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Menu
+    uniqueID: 3960244047
+    locked: 0
+  - name: Buttons
+    uniqueID: 782720585
+    locked: 0
+  - name: Enemy
+    uniqueID: 3675105225
+    locked: 0
+  - name: Player
+    uniqueID: 1703992877
     locked: 0
