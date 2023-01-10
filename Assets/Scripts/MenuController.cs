@@ -87,7 +87,7 @@ public class MenuController : MonoBehaviour
                     if(button.Value == Control.Selected)
                     {
                         if(button.Key.name.Equals("Easy"))
-                            SceneParameters.ShieldDegrees = 60;
+                            SceneParameters.ShieldDegrees = 45;
                         if(button.Key.name.Equals("Medium"))
                             SceneParameters.ShieldDegrees = 25;
                         if(button.Key.name.Equals("Hard"))

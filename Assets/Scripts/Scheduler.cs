@@ -1,10 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class Scheduler : MonoBehaviour
 {
+
+    [Serializable]
+    public struct Json 
+    {
+        public float time;
+        public float angle;
+        public int shieldAngle;
+    }
+
+    private List<Json> SavedData;
     public GameObject _player;
 
     public GameObject turret;
@@ -28,6 +39,7 @@ public class Scheduler : MonoBehaviour
 
     void Awake()
     {
+        SavedData = new List<Json>();
         countdownStart = 0.0f;
         player = Instantiate(_player, Vector3.zero, Quaternion.identity);
         player.GetComponentInChildren<DrawCircle>().degrees = SceneParameters.ShieldDegrees;
@@ -70,7 +82,7 @@ public class Scheduler : MonoBehaviour
                 SceneManager.LoadScene("Menu");
             }
         }
-        else if(measuredTime.Count < 15)
+        else if(SavedData.Count < 15)
         {
             // if(enemies.TrueForAll(delegate(GameObject enemy)
             // {
@@ -80,14 +92,15 @@ public class Scheduler : MonoBehaviour
             if(enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Teleporting")
                makeNewTurret(); 
             if(enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Ready")
-            {
                 if(countdownStart == 0.0f)
                     countdownStart = Time.time;
+            if(enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Firing")
+            {
+                if(countdownStart != 0.0f)
+                    currentTime = (Time.time - countdownStart).ToString() + " s\nDistance angle: " + distanceAngle[distanceAngle.Count-1];
+                else
+                    currentTime = countdownStart.ToString() + " s\nDistance angle: " + distanceAngle[distanceAngle.Count-1];
             }
-            if(countdownStart != 0.0f)
-                currentTime = (Time.time - countdownStart).ToString() + " s\nDistance angle: " + distanceAngle[distanceAngle.Count-1];
-            else
-                currentTime = countdownStart.ToString() + " s\nDistance angle: " + distanceAngle[distanceAngle.Count-1];
             /*if(enemies.Count < 1)
                 makeNewTurret();
             if(enemies[0] == null)
@@ -105,10 +118,10 @@ public class Scheduler : MonoBehaviour
         }
         else
         {
-            var outputString = "";
-            for(int i = 0; i < measuredTime.Count; i++)
+            string outputString = "";
+            foreach(Json json in SavedData)
             {
-                outputString += string.Format("{0, -10}{1, -2}{2, -10}{3, -4}{4, 4}{5, -4}",measuredTime[i].ToString(), "s", distanceAngle[i].ToString(), "deg", player.GetComponentInChildren<DrawCircle>().degrees, " deg\n");
+                outputString += JsonUtility.ToJson(json) + "\n";
             }
             int health = player.GetComponent<PlayerController>().currentHealth;
             outputString += health == 1 ? "1 life remains" : health.ToString() + " lives remain";
@@ -140,9 +153,11 @@ public class Scheduler : MonoBehaviour
 
     void makeNewTurret()
     {
+        countdownStart = 0.0f;
+
         float radius = 3f;
 
-        float radian = Random.Range(0.0f, 1.0f);
+        float radian = UnityEngine.Random.Range(0.0f, 1.0f);
 
         float xScaled = Mathf.Cos(radian * 2 * Mathf.PI);
         float yScaled = Mathf.Sin(radian * 2 * Mathf.PI);
@@ -171,14 +186,25 @@ public class Scheduler : MonoBehaviour
         {
             countdownStart = 0.0f;
             measuredTime.Add(float.PositiveInfinity);
+            SavedData.Add(new Json
+            {
+                time = float.PositiveInfinity,
+                angle = distanceAngle[distanceAngle.Count - 1],
+                shieldAngle = player.GetComponentInChildren<DrawCircle>().degrees
+            });
             Instantiate<GameObject>(Spark, player.transform.position, enemy.transform.rotation);
             player.GetComponent<PlayerController>().TakeDamage();
             enemy.GetComponent<Aim>().Shoot();
         }
-        if(enemy != null && enemy.GetComponent<Aim>().onBlock)
+        else if(enemy != null && enemy.GetComponent<Aim>().onBlock)
         {
             countdownStart = 0.0f;
-            measuredTime.Add(enemy.GetComponent<Aim>().returnTime());
+            SavedData.Add(new Json
+            {
+                time = enemy.GetComponent<Aim>().returnTime(),
+                angle = distanceAngle[distanceAngle.Count - 1],
+                shieldAngle = player.GetComponentInChildren<DrawCircle>().degrees
+            });
             lightnings.Add(Instantiate(lightning, Vector3.zero, Quaternion.identity));
             lightnings.Add(Instantiate(lightning, Vector3.zero, Quaternion.identity));
             lightnings[lightnings.Count - 1].GetComponent<LightningBolt>().SetRenderer(player.transform.position, enemy.GetComponent<Aim>().GetHitPoint(), true);

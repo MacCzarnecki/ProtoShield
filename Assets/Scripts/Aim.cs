@@ -21,7 +21,7 @@ public class Aim : MonoBehaviour
         //countdownStart = 0.0f;
     }
 
-    private void Update() {
+    private void FixedUpdate() {
         if(animator.GetCurrentAnimatorClipInfo(0).Length == 0 || animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Teleporting")
         {
             countdownStart = 0.0f;
@@ -68,7 +68,7 @@ public class Aim : MonoBehaviour
         else
         {
             float frame = animator.GetCurrentAnimatorStateInfo(0).normalizedTime % 1.0f;
-            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 5.0f)
+            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 8.0f)
             {
                 player.GetComponent<PlayerController>().TakeDamage();
                 animator.Play("Firing", 0);
