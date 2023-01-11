@@ -44,14 +44,12 @@ public class Scheduler : MonoBehaviour
         player = Instantiate(_player, Vector3.zero, Quaternion.identity);
         player.GetComponentInChildren<DrawCircle>().degrees = SceneParameters.ShieldDegrees;
         player.GetComponentInChildren<ShieldController>().control = SceneParameters.control;
-        StartCoroutine(Wait());
     }
     void Start()
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         lightnings = new List<GameObject>();
-        makeNewTurret();
     }
 
     void Update()
@@ -68,13 +66,6 @@ public class Scheduler : MonoBehaviour
     {
         if(player == null || player.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Death")
         {
-            //Cursor.visible = true;
-            //Cursor.lockState = CursorLockMode.None;
-            //if(enemies.TrueForAll(delegate(GameObject enemy)
-            //{
-            //    if(enemy == null) return true;
-            //    else return false;
-            //}))
             if(enemy == null && player == null)
             {
                 Cursor.visible = true;
@@ -89,7 +80,7 @@ public class Scheduler : MonoBehaviour
             //     if(enemy == null) return true;
             //     else return false;
             // }))
-            if(enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Teleporting")
+            if(enemy == null || (enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Teleporting"))
                makeNewTurret(); 
             if(enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Ready")
                 if(countdownStart == 0.0f)
@@ -124,21 +115,14 @@ public class Scheduler : MonoBehaviour
                 outputString += JsonUtility.ToJson(json) + "\n";
             }
             int health = player.GetComponent<PlayerController>().currentHealth;
-            outputString += health == 1 ? "1 life remains" : health.ToString() + " lives remain";
+            //outputString += health == 1 ? "1 life remains" : health.ToString() + " lives remain";
             File.WriteAllText("result.txt", outputString);
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-            StartCoroutine(Wait());
-            //if(enemies.Count == 0)
             SceneManager.LoadScene("Menu");
         }
 
         FadeLightning();
-    }
-
-    IEnumerator Wait()
-    {
-        yield return new WaitForSeconds(1);
     }
 
     void FadeLightning()
