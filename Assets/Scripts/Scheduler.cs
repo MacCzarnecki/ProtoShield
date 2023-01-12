@@ -15,9 +15,13 @@ public class Scheduler : MonoBehaviour
         public int shieldAngle;
     }
 
+    public GameObject _countdown;
     private List<Json> SavedData;
     public GameObject _player;
 
+    public GameObject X_Axis_Tutorial;
+
+    private Animator countdown;
     public GameObject turret;
 
     public GameObject lightning;
@@ -41,9 +45,13 @@ public class Scheduler : MonoBehaviour
     {
         SavedData = new List<Json>();
         countdownStart = 0.0f;
+        
+        countdown = Instantiate(_countdown, new Vector3(0.0f, 1.5f, 0.0f), Quaternion.identity).GetComponent<Animator>();
         player = Instantiate(_player, Vector3.zero, Quaternion.identity);
         player.GetComponentInChildren<DrawCircle>().degrees = SceneParameters.ShieldDegrees;
         player.GetComponentInChildren<ShieldController>().control = SceneParameters.control;
+        if(SceneParameters.control == ShieldController.Control.X_Axis)
+            Destroy(Instantiate(X_Axis_Tutorial, new Vector3(0.0f, -2.0f, 0.0f), Quaternion.identity), 3.0f);
     }
     void Start()
     {
@@ -64,6 +72,8 @@ public class Scheduler : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if(countdown.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+            return;
         if(player == null || player.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Death")
         {
             if(enemy == null && player == null)
@@ -82,15 +92,13 @@ public class Scheduler : MonoBehaviour
             // }))
             if(enemy == null || (enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Teleporting"))
                makeNewTurret(); 
-            if(enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Ready")
+            if(enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Loading")
                 if(countdownStart == 0.0f)
                     countdownStart = Time.time;
             if(enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Firing")
             {
                 if(countdownStart != 0.0f)
                     currentTime = (Time.time - countdownStart).ToString() + " s\nDistance angle: " + distanceAngle[distanceAngle.Count-1];
-                else
-                    currentTime = countdownStart.ToString() + " s\nDistance angle: " + distanceAngle[distanceAngle.Count-1];
             }
             /*if(enemies.Count < 1)
                 makeNewTurret();
@@ -166,21 +174,19 @@ public class Scheduler : MonoBehaviour
 
     void onClick()
     {
-        if(enemy != null && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Ready")
-        {
-            countdownStart = 0.0f;
-            measuredTime.Add(float.PositiveInfinity);
-            SavedData.Add(new Json
-            {
-                time = float.PositiveInfinity,
-                angle = distanceAngle[distanceAngle.Count - 1],
-                shieldAngle = player.GetComponentInChildren<DrawCircle>().degrees
-            });
-            Instantiate<GameObject>(Spark, player.transform.position, enemy.transform.rotation);
-            player.GetComponent<PlayerController>().TakeDamage();
-            enemy.GetComponent<Aim>().Shoot();
-        }
-        else if(enemy != null && enemy.GetComponent<Aim>().onBlock)
+
+        // countdownStart = 0.0f;
+        // measuredTime.Add(float.PositiveInfinity);
+        // SavedData.Add(new Json
+        // {
+        //     time = float.PositiveInfinity,
+        //     angle = distanceAngle[distanceAngle.Count - 1],
+        //     shieldAngle = player.GetComponentInChildren<DrawCircle>().degrees
+        // });
+        // Instantiate<GameObject>(Spark, player.transform.position, enemy.transform.rotation);
+        // player.GetComponent<PlayerController>().TakeDamage();
+        // enemy.GetComponent<Aim>().Shoot();
+        if(enemy != null && enemy.GetComponent<Aim>().onBlock)
         {
             countdownStart = 0.0f;
             SavedData.Add(new Json

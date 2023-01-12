@@ -9,6 +9,9 @@ public class Aim : MonoBehaviour
     private Animator animator;
     public bool onBlock = false;
 
+    public GameObject _lightning;
+    private GameObject lightning;
+
     RaycastHit2D hit;
 
     public float countdownStart;
@@ -72,6 +75,8 @@ public class Aim : MonoBehaviour
             {
                 player.GetComponent<PlayerController>().TakeDamage();
                 animator.Play("Firing", 0);
+                lightning = Instantiate(_lightning, Vector3.zero, Quaternion.identity);
+                lightning.GetComponent<Lazer>().SetRenderer(player.transform.position, transform.position);
             }
 
             if(frame >= 0.5f)
@@ -102,6 +107,10 @@ public class Aim : MonoBehaviour
                     onBlock = false;
                 }
             }
+
+            if(lightning != null)
+                if(lightning.GetComponent<LightningBolt>().isFaded())
+                    Destroy(lightning);
         }
     }
 
@@ -112,6 +121,8 @@ public class Aim : MonoBehaviour
     public void Shoot()
     {
         animator.Play("Firing", 0);
+        lightning = Instantiate(_lightning, Vector3.zero, Quaternion.identity);
+        lightning.GetComponent<Lazer>().SetRenderer(hit.point, transform.position);
     }
 
     public void onDestroy()

@@ -49,6 +49,7 @@ MonoBehaviour:
   player: {fileID: 2237101071001836942, guid: 652f5ce014902af44a48536c010d745c, type: 3}
   Spark: {fileID: 3325714916937645309, guid: e7d51b39ee19e82439d7aafc8985566f, type: 3}
   onBlock: 0
+  _lightning: {fileID: 8728896981455131555, guid: 2949c0215df534e4187f5c1faf117ee0, type: 3}
   countdownStart: 0
 --- !u!212 &4095795336517137052
 SpriteRenderer:
