@@ -7,29 +7,26 @@ public class Lazer : MonoBehaviour
     // Start is called before the first frame update
    private LineRenderer bolt;
 
+   public Texture[] LazerFade;
+
     private void Awake()
     {
         bolt = GetComponent<LineRenderer>();
     }
+
+    int index = 0;
     
     private void FixedUpdate() {
-        var color = bolt.material.color;
- 
-        bolt.material.color = new Color(color.r, color.g, color.b, color.a - 0.1f);
+        bolt.material.SetTexture("_MainTex", LazerFade[index]);
+        index++;
+        if(index >= LazerFade.Length)
+            Destroy(gameObject);
     }
 
     public void SetRenderer(Vector3 startPosition, Vector3 endPosition)
     {
-        bolt.material = bolt.materials[0];
+        bolt.materials[0].SetTexture("_MainTex", LazerFade[5]);
         bolt.positionCount = 2;
         bolt.SetPositions(new Vector3[]{startPosition, endPosition});
-    }
-
-    public bool isFaded()
-    {   
-        if(bolt.material.color.a <= 0.0f)
-            return true;
-        else
-            return false;
     }
 }

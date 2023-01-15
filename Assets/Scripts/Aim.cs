@@ -28,11 +28,8 @@ public class Aim : MonoBehaviour
         if(animator.GetCurrentAnimatorClipInfo(0).Length == 0 || animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Teleporting")
         {
             countdownStart = 0.0f;
-            if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
-            {
-                Destroy(gameObject);
-                return;
-            }
+
+            Destroy(gameObject, 2.0f);
         }
         else
         {
@@ -41,11 +38,11 @@ public class Aim : MonoBehaviour
             hit = Physics2D.Raycast(transform.position, direction, direction.magnitude);
             //Debug.DrawRay(transform.position, direction, Color.green);
 
-            if(animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Loading")
+            if(animator.GetCurrentAnimatorClipInfo(0).Length == 0 || animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Loading")
             {
                 LeadLazer(direction, false);
             }
-            else if(animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Ready")
+            if(animator.GetCurrentAnimatorClipInfo(0).Length == 0 || animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Ready")
             {
                 if(countdownStart == 0.0f)
                     countdownStart = Time.time;
@@ -107,10 +104,6 @@ public class Aim : MonoBehaviour
                     onBlock = false;
                 }
             }
-
-            if(lightning != null)
-                if(lightning.GetComponent<LightningBolt>().isFaded())
-                    Destroy(lightning);
         }
     }
 

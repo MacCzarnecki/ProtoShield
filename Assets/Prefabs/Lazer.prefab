@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3887397759156663311}
   - component: {fileID: 6169181907226533426}
   - component: {fileID: -1302006803150113806}
-  - component: {fileID: 7837564483298952105}
   m_Layer: 0
   m_Name: Lazer
   m_TagString: Untagged
@@ -145,23 +144,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9fdf6b531b06de4aadb9fb4230484dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!95 &7837564483298952105
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8728896981455131555}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e748b6237add8074686ed6b8882cce55, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  LazerFade:
+  - {fileID: 2800000, guid: 0239af8abc505c446bbfa00dbd301d8b, type: 3}
+  - {fileID: 2800000, guid: a3e15f5d1c553884fac96011300d76d8, type: 3}
+  - {fileID: 2800000, guid: 1f606ca400c81c143bb3f4b9a3894716, type: 3}
+  - {fileID: 2800000, guid: ee45197e27d29e04484cd0e29206cbb0, type: 3}
+  - {fileID: 2800000, guid: e441160e79ddd6048ac516ea26feaf5c, type: 3}
+  - {fileID: 2800000, guid: 0a3bb065f34e75844b263f826751d9bd, type: 3}
+  - {fileID: 2800000, guid: e01827fbd0ddf7d43afd809349b6bfec, type: 3}
+  - {fileID: 2800000, guid: eb1bc323d9743a34ba0873f8a857f4d4, type: 3}
+  - {fileID: 2800000, guid: 4286838ad92e0f74096177a121e47dc7, type: 3}
+  - {fileID: 2800000, guid: 62fbdb92fd46ed049bdef0267212723a, type: 3}
+  - {fileID: 2800000, guid: 6364f8f748a356e439460630eee3737f, type: 3}
+  - {fileID: 2800000, guid: 9293bfacf674b534d99ea6507e779b2d, type: 3}
+  - {fileID: 2800000, guid: b6510d6411a516641b521618026d9948, type: 3}
+  - {fileID: 2800000, guid: 9f1672664d2d88344b2e88a6978aaa90, type: 3}
+  - {fileID: 2800000, guid: 6cc2c45c9eb31384986d88bf308cbbd1, type: 3}
+  - {fileID: 2800000, guid: 4b23fea5e9a807f47b460f01d785ddbd, type: 3}

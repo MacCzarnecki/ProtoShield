@@ -8,46 +8,54 @@ public class TurretMovement : MonoBehaviour
 
     Vector3 offset;
 
+    public GameObject player;
     public float speed;
+    private float offsetMultiplier;
     // Start is called before the first frame update
     void Start()
     {
+        offsetMultiplier = Random.Range(-0.02f, 0.02f);
         direction = new Vector3(Random.Range(-1.0f, 1.0f) ,Random.Range(-1.0f, 1.0f), 0.0f);
         direction.Normalize();
-        offset = Vector3.Cross(direction, Vector3.back) * Random.Range(-0.1f, 0.1f);
+        offset = Vector3.Cross(direction, Vector3.back).normalized * offsetMultiplier;
     }
 
     // Update is called once per frame
     void Update()
     {
-        offset += offset.normalized * Random.Range(-0.1f, 0.1f);
-        Vector3 newDirection = direction + offset;
-        newDirection.Normalize();
-        Vector3 newPosition = transform.position + newDirection * speed;
-        if(isInCameraRange(newPosition.x, newPosition.y))
-            //Debug.Log("Hit bound");
         direction += offset;
         direction.Normalize();
-        transform.position += direction * speed;
+        offset = Vector3.Cross(direction, Vector3.back).normalized * offsetMultiplier;
+        Vector3 newPosition = transform.position + direction * speed;
+        isInCameraRange(newPosition.x, newPosition.y);
+        if((newPosition - player.transform.position).magnitude < 2.0f)
+        {
+            direction = Vector3.Reflect(direction,transform.position - player.transform.position);
+            direction.Normalize();
+            offset = Vector3.Reflect(offset, direction);
+            direction += offset;
+            direction.Normalize();
+            transform.position += direction * speed;
+        }
+        else
+            transform.position += direction * speed;
     }
 
-    bool isInCameraRange(float x, float y)
+    void isInCameraRange(float x, float y)
     {
         Vector3 cameraPosition = Camera.main.transform.position;
         float screenAspect = (float)Screen.width / (float)Screen.height;
-        float cameraHeight = Camera.main.orthographicSize + cameraPosition.y;
-        float cameraWidth = screenAspect * Camera.main.orthographicSize + cameraPosition.x;
+        float cameraHeight = Camera.main.orthographicSize + cameraPosition.y - .5f;
+        float cameraWidth = screenAspect * Camera.main.orthographicSize + cameraPosition.x - .5f;
         Debug.Log(cameraWidth.ToString() + cameraHeight.ToString());
-        if(y > cameraHeight / 2 || y <  -(cameraHeight/ 2))
+        if(y > cameraHeight || y <  -(cameraHeight))
         {
             direction.y = -direction.y;
-            return false;
         }
-        if(x > cameraWidth / 2 || x < -(cameraWidth / 2))
+        if(x > cameraWidth || x < -(cameraWidth))
         {
             direction.x = -direction.x;
-            return false;
         }
-        return true;
+        offset = Vector3.Cross(direction, Vector3.back).normalized * offsetMultiplier;
     }
 }

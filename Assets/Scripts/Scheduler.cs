@@ -26,6 +26,8 @@ public class Scheduler : MonoBehaviour
 
     public GameObject lightning;
 
+    public GameObject platform;
+
     public GameObject Spark;
     //public List<GameObject> enemies;
 
@@ -50,8 +52,9 @@ public class Scheduler : MonoBehaviour
         player = Instantiate(_player, Vector3.zero, Quaternion.identity);
         player.GetComponentInChildren<DrawCircle>().degrees = SceneParameters.ShieldDegrees;
         player.GetComponentInChildren<ShieldController>().control = SceneParameters.control;
+        Instantiate(platform, new Vector3(0.0f, -1.0f, 0.0f), Quaternion.identity);
         if(SceneParameters.control == ShieldController.Control.X_Axis)
-            Destroy(Instantiate(X_Axis_Tutorial, new Vector3(0.0f, -2.0f, 0.0f), Quaternion.identity), 3.0f);
+            Destroy(Instantiate(X_Axis_Tutorial, new Vector3(0.0f, -2.5f, 0.0f), Quaternion.identity), 3.0f);
     }
     void Start()
     {

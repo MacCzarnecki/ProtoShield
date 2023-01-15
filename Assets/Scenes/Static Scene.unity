@@ -355,6 +355,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2237101071001836942, guid: 652f5ce014902af44a48536c010d745c, type: 3}
     - target: {fileID: 8197529462742068859, guid: 512fe59713e10c546842112957f9385e, type: 3}
+      propertyPath: platform
+      value: 
+      objectReference: {fileID: 5175387682601806950, guid: a08f63040e625614490e6b1ed7adc466, type: 3}
+    - target: {fileID: 8197529462742068859, guid: 512fe59713e10c546842112957f9385e, type: 3}
       propertyPath: _countdown
       value: 
       objectReference: {fileID: 5539972871798724761, guid: a51a36016a0adb346aa1e9fd8e341401, type: 3}
