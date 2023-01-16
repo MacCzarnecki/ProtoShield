@@ -13,6 +13,7 @@ public class DrawCircle : MonoBehaviour
     public float radius;
     PolygonCollider2D polygonCollider;
 
+    float BG = 1.0f;
     GameObject[] enemies;
 
     void Awake() {
@@ -29,6 +30,14 @@ public class DrawCircle : MonoBehaviour
     {
         drawCircle();
         setCollider();
+        circleRenderer.material.color = new Color(1.0f, BG, BG);
+        if(BG < 1.0f)
+            BG += 0.01f;
+    }
+
+    public void Reflect()
+    {
+        BG = 0.3f;
     }
 
     void drawCircle()

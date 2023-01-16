@@ -8,7 +8,9 @@ public class ShieldController : MonoBehaviour
 
     public float wheelSpeed = 0.02f;
 
-    public enum Control{X_Axis, MouseWheel};
+    public float arrowSpeed = 0.005f;
+
+    public enum Control{X_Axis, MouseWheel, Arrows};
 
     public Control control;
     // Start is called before the first frame update
@@ -28,10 +30,15 @@ public class ShieldController : MonoBehaviour
         }
         if(control == Control.MouseWheel)
         {
-            float rotation = Input.mouseScrollDelta.y * rotationSpeed;
+            float rotation = Input.mouseScrollDelta.y * wheelSpeed;
 
             transform.Rotate(0, 0, rotation);
         }
+        if(control == Control.Arrows)
+        {
+            float rotation = Input.GetAxisRaw("Horizontal") * arrowSpeed;
 
+            transform.Rotate(0, 0, rotation);
+        }
     }
 }

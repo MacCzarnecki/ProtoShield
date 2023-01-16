@@ -120,14 +120,16 @@ public class Scheduler : MonoBehaviour
         }
         else
         {
-            string outputString = "";
+            string outputString = "{\n\"data\": [";
             foreach(Json json in SavedData)
             {
-                outputString += JsonUtility.ToJson(json) + "\n";
+                outputString += "\n" + JsonUtility.ToJson(json) + ",";
             }
+            outputString = outputString.TrimEnd(',');
+            outputString += "\n]\n}";
             int health = player.GetComponent<PlayerController>().currentHealth;
             //outputString += health == 1 ? "1 life remains" : health.ToString() + " lives remain";
-            File.WriteAllText("result.txt", outputString);
+            File.WriteAllText("result.json", outputString);
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             SceneManager.LoadScene("Menu");
@@ -189,7 +191,7 @@ public class Scheduler : MonoBehaviour
         // Instantiate<GameObject>(Spark, player.transform.position, enemy.transform.rotation);
         // player.GetComponent<PlayerController>().TakeDamage();
         // enemy.GetComponent<Aim>().Shoot();
-        if(enemy != null && enemy.GetComponent<Aim>().onBlock)
+        if(enemy != null && enemy.GetComponent<Aim>().onBlock && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Firing")
         {
             countdownStart = 0.0f;
             SavedData.Add(new Json
@@ -198,6 +200,7 @@ public class Scheduler : MonoBehaviour
                 angle = distanceAngle[distanceAngle.Count - 1],
                 shieldAngle = player.GetComponentInChildren<DrawCircle>().degrees
             });
+            player.GetComponentInChildren<DrawCircle>().Reflect();
             lightnings.Add(Instantiate(lightning, Vector3.zero, Quaternion.identity));
             lightnings.Add(Instantiate(lightning, Vector3.zero, Quaternion.identity));
             lightnings[lightnings.Count - 1].GetComponent<LightningBolt>().SetRenderer(player.transform.position, enemy.GetComponent<Aim>().GetHitPoint(), true);

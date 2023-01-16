@@ -80,6 +80,8 @@ public class MenuController : MonoBehaviour
                             SceneParameters.control = ShieldController.Control.X_Axis;
                         if(button.Key.name.Equals("Wheel"))
                             SceneParameters.control = ShieldController.Control.MouseWheel;
+                        if(button.Key.name.Equals("Arrows"))
+                            SceneParameters.control = ShieldController.Control.Arrows;
                         animator.Play("Slide", 0);
                     }
             if(animator.GetCurrentAnimatorStateInfo(0).IsName("End"))

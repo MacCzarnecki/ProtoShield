@@ -49,6 +49,7 @@ MonoBehaviour:
   X_Axis_Tutorial: {fileID: 4581501599989203045, guid: 032dfc7bd97d8f149a6ff9bd9926550c, type: 3}
   turret: {fileID: 296037464215600780, guid: b37898315454f854494f23712c45f27b, type: 3}
   lightning: {fileID: 2011542860895728507, guid: 6707ef1f991fc77429cb8d326ce0ffec, type: 3}
+  platform: {fileID: 2933379863988746186, guid: a83852cc8454cd14c99ba43d7a6eea28, type: 3}
   Spark: {fileID: 3325714916937645309, guid: e7d51b39ee19e82439d7aafc8985566f, type: 3}
   distanceAngle: []
   measuredTime: []

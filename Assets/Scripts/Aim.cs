@@ -21,16 +21,12 @@ public class Aim : MonoBehaviour
     private void Awake() 
     {
         animator = GetComponent<Animator>();
-        //countdownStart = 0.0f;
+        countdownStart = Time.time;
     }
 
     private void FixedUpdate() {
         if(animator.GetCurrentAnimatorClipInfo(0).Length == 0 || animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Teleporting")
-        {
-            countdownStart = 0.0f;
-
             Destroy(gameObject, 2.0f);
-        }
         else
         {
             Vector2 direction = player.transform.position - transform.position;
@@ -44,8 +40,6 @@ public class Aim : MonoBehaviour
             }
             if(animator.GetCurrentAnimatorClipInfo(0).Length == 0 || animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Ready")
             {
-                if(countdownStart == 0.0f)
-                    countdownStart = Time.time;
                 LeadLazer(direction, true);
             }
         }
