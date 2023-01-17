@@ -114,7 +114,6 @@ public class Aim : MonoBehaviour
 
     public void onDestroy()
     {
-        Instantiate<GameObject>(Spark, hit.point, transform.rotation);
         Destroy(gameObject);
     }
 

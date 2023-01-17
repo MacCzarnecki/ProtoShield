@@ -205,7 +205,7 @@ public class Scheduler : MonoBehaviour
             lightnings.Add(Instantiate(lightning, Vector3.zero, Quaternion.identity));
             lightnings[lightnings.Count - 1].GetComponent<LightningBolt>().SetRenderer(player.transform.position, enemy.GetComponent<Aim>().GetHitPoint(), true);
             lightnings[lightnings.Count - 2].GetComponent<LightningBolt>().SetRenderer(player.transform.position, enemy.GetComponent<Aim>().GetHitPoint(), false);
-            Instantiate<GameObject>(Spark, enemy.GetComponent<Aim>().GetHitPoint(), enemy.transform.rotation);
+            Destroy(Instantiate<GameObject>(Spark, enemy.GetComponent<Aim>().GetHitPoint(), enemy.transform.rotation), 0.4f);
             enemy.GetComponent<Aim>().Shoot();
         }
     }
