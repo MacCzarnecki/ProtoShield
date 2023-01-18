@@ -25,7 +25,6 @@ public class Lazer : MonoBehaviour
 
     public void SetRenderer(Vector3 startPosition, Vector3 endPosition)
     {
-        bolt.materials[0].SetTexture("_MainTex", LazerFade[5]);
         bolt.positionCount = 2;
         bolt.SetPositions(new Vector3[]{startPosition, endPosition});
     }
