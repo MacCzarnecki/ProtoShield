@@ -28,6 +28,10 @@ public class PlayerController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
     }
+
+    private void Update() {
+        
+    }
     private void FixedUpdate() {
         for(int i = maxHealth - 1; i >= 0; i--)
         {
