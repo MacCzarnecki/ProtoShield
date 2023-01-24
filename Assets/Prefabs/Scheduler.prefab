@@ -46,10 +46,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _countdown: {fileID: 5539972871798724761, guid: a51a36016a0adb346aa1e9fd8e341401, type: 3}
   _player: {fileID: 2237101071001836942, guid: 652f5ce014902af44a48536c010d745c, type: 3}
+  LeftClick_Tutorial: {fileID: 3589233815149871952, guid: 40965544e4c054241afeb8a7b4b4c7d0, type: 3}
+  _endMenu: {fileID: 155765276382605580, guid: 56d96804b98c94c4db743c74bda7811b, type: 3}
   X_Axis_Tutorial: {fileID: 4581501599989203045, guid: 032dfc7bd97d8f149a6ff9bd9926550c, type: 3}
+  Wheel_Tutorial: {fileID: 3324277705382762958, guid: 6e2338d325b099e498cdf66d916ffdff, type: 3}
   turret: {fileID: 296037464215600780, guid: b37898315454f854494f23712c45f27b, type: 3}
   lightning: {fileID: 2011542860895728507, guid: 6707ef1f991fc77429cb8d326ce0ffec, type: 3}
-  platform: {fileID: 2933379863988746186, guid: a83852cc8454cd14c99ba43d7a6eea28, type: 3}
+  _platform: {fileID: 2933379863988746186, guid: a83852cc8454cd14c99ba43d7a6eea28, type: 3}
   Spark: {fileID: 3325714916937645309, guid: e7d51b39ee19e82439d7aafc8985566f, type: 3}
   distanceAngle: []
   measuredTime: []

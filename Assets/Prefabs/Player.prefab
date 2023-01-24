@@ -123,7 +123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 3
   currentHealth: 0
-  heart: {fileID: 2705080760402699528, guid: befac53658f91aa47b3c4974944753fd, type: 3}
+  _heart: {fileID: 2705080760402699528, guid: befac53658f91aa47b3c4974944753fd, type: 3}
 --- !u!61 &5711908744410197008
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -178,9 +178,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2237101071001836938}
     m_Modifications:
+    - target: {fileID: 1544552208800965434, guid: 3369fe1501e50bb4aa6063d525b97287, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
+      value: 0.30303192
+      objectReference: {fileID: 0}
     - target: {fileID: 3173205373118732251, guid: 3369fe1501e50bb4aa6063d525b97287, type: 3}
       propertyPath: arrowSpeed
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3173205373118732251, guid: 3369fe1501e50bb4aa6063d525b97287, type: 3}
       propertyPath: wheelSpeed
@@ -233,6 +237,10 @@ PrefabInstance:
     - target: {fileID: 6857800269566908853, guid: 3369fe1501e50bb4aa6063d525b97287, type: 3}
       propertyPath: m_Name
       value: Shield
+      objectReference: {fileID: 0}
+    - target: {fileID: 8627872115494756631, guid: 3369fe1501e50bb4aa6063d525b97287, type: 3}
+      propertyPath: radius
+      value: 2.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3369fe1501e50bb4aa6063d525b97287, type: 3}

@@ -19,14 +19,21 @@ public class Scheduler : MonoBehaviour
     private List<Json> SavedData;
     public GameObject _player;
 
+    public GameObject LeftClick_Tutorial;
+
+    public GameObject _endMenu;
     public GameObject X_Axis_Tutorial;
+
+    public GameObject Wheel_Tutorial;
 
     private Animator countdown;
     public GameObject turret;
 
     public GameObject lightning;
 
-    public GameObject platform;
+    public GameObject _platform;
+
+    private GameObject platform;
 
     public GameObject Spark;
     //public List<GameObject> enemies;
@@ -42,19 +49,28 @@ public class Scheduler : MonoBehaviour
 
     public string currentTime;
     public float countdownStart;
-
+    private bool isEnd;
+    private GameObject endMenu;
     void Awake()
     {
         SavedData = new List<Json>();
         countdownStart = 0.0f;
-        
+        isEnd = false;
         countdown = Instantiate(_countdown, new Vector3(0.0f, 1.5f, 0.0f), Quaternion.identity).GetComponent<Animator>();
         player = Instantiate(_player, Vector3.zero, Quaternion.identity);
         player.GetComponentInChildren<DrawCircle>().degrees = SceneParameters.ShieldDegrees;
         player.GetComponentInChildren<ShieldController>().control = SceneParameters.control;
-        Instantiate(platform, new Vector3(0.0f, -1.0f, 0.0f), Quaternion.identity);
+        platform = Instantiate(_platform, new Vector3(0.0f, -1.0f, 0.0f), Quaternion.identity);
         if(SceneParameters.control == ShieldController.Control.X_Axis)
-            Destroy(Instantiate(X_Axis_Tutorial, new Vector3(0.0f, -2.5f, 0.0f), Quaternion.identity), 3.0f);
+        {
+            Destroy(Instantiate(X_Axis_Tutorial, new Vector3(-3.0f, -4.5f, 0.0f), Quaternion.identity), 3.0f);
+            Destroy(Instantiate(LeftClick_Tutorial, new Vector3(2.0f, -4.5f, 0.0f), Quaternion.identity), 3.0f);
+        }
+        else if(SceneParameters.control == ShieldController.Control.MouseWheel)
+        {
+            Destroy(Instantiate(Wheel_Tutorial, new Vector3(-3.0f, -4.5f, 0.0f), Quaternion.identity), 3.0f);
+            Destroy(Instantiate(LeftClick_Tutorial, new Vector3(2.0f, -4.5f, 0.0f), Quaternion.identity), 3.0f);
+        }
     }
     void Start()
     {
@@ -65,60 +81,27 @@ public class Scheduler : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(0) && (SceneParameters.control == ShieldController.Control.X_Axis || SceneParameters.control == ShieldController.Control.MouseWheel))
+            onClick();
+        if(Input.GetKeyDown("space") && SceneParameters.control == ShieldController.Control.Arrows)
             onClick();
     }
 
     private void OnGUI() {
-        currentTime = GUI.TextArea(new Rect(40, 20, 150, 50), currentTime, 50);
+        if(!isEnd)
+            currentTime = GUI.TextArea(new Rect(40, 20, 150, 50), currentTime, 50);
     }
     // Update is called once per frame
     void FixedUpdate()
     {
+        if(endMenu != null)
+        {
+            FadeLightning();
+            return;
+        }
         if(countdown.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
             return;
-        if(player == null || player.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Death")
-        {
-            if(enemy == null && player == null)
-            {
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-                SceneManager.LoadScene("Menu");
-            }
-        }
-        else if(SavedData.Count < 15)
-        {
-            // if(enemies.TrueForAll(delegate(GameObject enemy)
-            // {
-            //     if(enemy == null) return true;
-            //     else return false;
-            // }))
-            if(enemy == null || (enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Teleporting"))
-               makeNewTurret(); 
-            if(enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Loading")
-                if(countdownStart == 0.0f)
-                    countdownStart = Time.time;
-            if(enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Firing")
-            {
-                if(countdownStart != 0.0f)
-                    currentTime = (Time.time - countdownStart).ToString() + " s\nDistance angle: " + distanceAngle[distanceAngle.Count-1];
-            }
-            /*if(enemies.Count < 1)
-                makeNewTurret();
-            if(enemies[0] == null)
-            {
-                Destroy(enemies[0]);
-                enemies.RemoveAt(0);
-                //measuredTime.Add(float.PositiveInfinity);
-                distanceAngle.RemoveAt(distanceAngle.Count - 1);
-            }
-            for(int i = 0; i < enemies.Count; i++)
-            {
-                if(enemies[i] != null)
-                    currentTime = enemies[i].GetComponent<Aim>().returnTime().ToString() + " s\nDistance angle: " + distanceAngle[i];
-            }*/
-        }
-        else
+        if(SavedData.Count >= 15)
         {
             string outputString = "{\n\"data\": [";
             foreach(Json json in SavedData)
@@ -130,9 +113,33 @@ public class Scheduler : MonoBehaviour
             int health = player.GetComponent<PlayerController>().currentHealth;
             //outputString += health == 1 ? "1 life remains" : health.ToString() + " lives remain";
             File.WriteAllText("result.json", outputString);
+            SaveToCSV();
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-            SceneManager.LoadScene("Menu");
+            endMenu = Instantiate(_endMenu, Vector3.zero, Quaternion.identity);
+            endMenu.GetComponent<ShowScore>().RenderText(SavedData);
+            Destroy(player);
+            Destroy(platform);
+            Destroy(enemy);
+            isEnd = true;
+        }
+        else if(player == null || player.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Death")
+        {
+            if(enemy == null && player == null)
+            {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+                SceneManager.LoadScene("Menu");
+            }
+        }
+        else
+        {
+            if(enemy == null)
+                makeNewTurret(); 
+            if(enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Firing")
+            {
+                currentTime = (Time.time - countdownStart).ToString() + " s\nDistance angle: " + distanceAngle[distanceAngle.Count-1];
+            }
         }
 
         FadeLightning();
@@ -148,11 +155,37 @@ public class Scheduler : MonoBehaviour
             }
     }
 
+    void SaveToCSV()
+    {
+        string ruta = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/')) + "/data/" + "result.csv";
+        if (File.Exists(ruta))
+        {
+            File.Delete(ruta);
+        }
+        var sr = File.CreateText(ruta);
+
+        string datosCSV = "angle, time, shield angle" + "\r\n";
+        foreach(Json json in SavedData)
+        {
+            datosCSV += String.Format("{0},{1},{2}\r\n", json.angle.ToString("0.00").Replace(',','.'), json.time.ToString("0.00000").Replace(',','.'), json.shieldAngle);
+        }
+
+        sr.WriteLine(datosCSV);
+
+        FileInfo fInfo = new FileInfo(ruta);
+        fInfo.IsReadOnly = true;
+    
+        //Cerrar
+        sr.Close(); 
+
+        Application.OpenURL(ruta);
+
+    }
     void makeNewTurret()
     {
-        countdownStart = 0.0f;
+        countdownStart = Time.time;
 
-        float radius = 3f;
+        float radius = 5.0f;
 
         float radian = UnityEngine.Random.Range(0.0f, 1.0f);
 
@@ -180,23 +213,11 @@ public class Scheduler : MonoBehaviour
     void onClick()
     {
 
-        // countdownStart = 0.0f;
-        // measuredTime.Add(float.PositiveInfinity);
-        // SavedData.Add(new Json
-        // {
-        //     time = float.PositiveInfinity,
-        //     angle = distanceAngle[distanceAngle.Count - 1],
-        //     shieldAngle = player.GetComponentInChildren<DrawCircle>().degrees
-        // });
-        // Instantiate<GameObject>(Spark, player.transform.position, enemy.transform.rotation);
-        // player.GetComponent<PlayerController>().TakeDamage();
-        // enemy.GetComponent<Aim>().Shoot();
         if(enemy != null && enemy.GetComponent<Aim>().onBlock && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Firing")
         {
-            countdownStart = 0.0f;
             SavedData.Add(new Json
             {
-                time = enemy.GetComponent<Aim>().returnTime(),
+                time = Time.time - countdownStart,
                 angle = distanceAngle[distanceAngle.Count - 1],
                 shieldAngle = player.GetComponentInChildren<DrawCircle>().degrees
             });
@@ -207,6 +228,8 @@ public class Scheduler : MonoBehaviour
             lightnings[lightnings.Count - 2].GetComponent<LightningBolt>().SetRenderer(player.transform.position, enemy.GetComponent<Aim>().GetHitPoint(), false);
             Destroy(Instantiate<GameObject>(Spark, enemy.GetComponent<Aim>().GetHitPoint(), enemy.transform.rotation), 0.4f);
             enemy.GetComponent<Aim>().Shoot();
+            if(SavedData.Count < 15)
+                makeNewTurret();
         }
     }
 }

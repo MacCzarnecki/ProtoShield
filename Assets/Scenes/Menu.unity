@@ -856,7 +856,6 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 512
-  player: {fileID: 2237101071001836942, guid: 652f5ce014902af44a48536c010d745c, type: 3}
   cam: {fileID: 1362035044}
 --- !u!95 &1141118617
 Animator:

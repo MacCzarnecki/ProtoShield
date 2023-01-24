@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 6
   wheelSpeed: 0.02
+  arrowSpeed: 0.005
   control: 0
 --- !u!120 &1544552208800965434
 LineRenderer:
@@ -194,4 +195,4 @@ MonoBehaviour:
   currentRotation: 0
   circleRenderer: {fileID: 1544552208800965434}
   degrees: 60
-  radius: 1.5
+  radius: 2.5

@@ -10,7 +10,6 @@ public class MenuController : MonoBehaviour
     public LayerMask mask;
     RaycastHit2D hit;
 
-    public GameObject player;
     public Camera cam;
 
     private Animator animator;

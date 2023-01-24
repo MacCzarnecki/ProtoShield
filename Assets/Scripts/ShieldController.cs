@@ -8,18 +8,12 @@ public class ShieldController : MonoBehaviour
 
     public float wheelSpeed = 0.02f;
 
-    public float arrowSpeed = 0.005f;
+    public float arrowSpeed = 0.01f;
 
     public enum Control{X_Axis, MouseWheel, Arrows};
 
     public Control control;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
     void Update()
     {
         if(control == Control.X_Axis)

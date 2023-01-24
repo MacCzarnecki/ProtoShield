@@ -10,9 +10,7 @@ public class PlayerController : MonoBehaviour
     public int currentHealth;
 
     Animator animator;
-
-
-    public GameObject heart;
+    public GameObject _heart;
 
     private GameObject[] hearts;
     void Awake()
@@ -21,7 +19,7 @@ public class PlayerController : MonoBehaviour
         hearts = new GameObject[maxHealth];
         for(int i = 0; i < hearts.Length; i++)
         {
-            hearts[i] = Instantiate(heart, new Vector3(7.0f - 1.0f * i, 3.0f, 0.0f), Quaternion.identity);
+            hearts[i] = Instantiate(_heart, new Vector3(14.0f - 2.5f * i, 5.0f, 0.0f), Quaternion.identity);
         }
     }
     void Start()
@@ -49,6 +47,11 @@ public class PlayerController : MonoBehaviour
         animator.Play("Death", 0);
         transform.GetChild(0).gameObject.SetActive(false);
         Destroy(gameObject, animator.GetCurrentAnimatorClipInfo(0)[0].clip.length);
+    }
+
+    void OnDestroy() {
+        foreach(var heart in hearts)
+            Destroy(heart);
     }
 
     public void TakeDamage()

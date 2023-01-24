@@ -62,7 +62,7 @@ public class Aim : MonoBehaviour
         else
         {
             float frame = animator.GetCurrentAnimatorStateInfo(0).normalizedTime % 1.0f;
-            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 8.0f)
+            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 4.0f)
             {
                 player.GetComponent<PlayerController>().TakeDamage();
                 animator.Play("Firing", 0);
