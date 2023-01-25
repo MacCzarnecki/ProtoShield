@@ -33,6 +33,7 @@ public class DrawCircle : MonoBehaviour
         circleRenderer.material.color = new Color(1.0f, BG, BG);
         if(BG < 1.0f)
             BG += 0.01f;
+            
     }
 
     public void Reflect()

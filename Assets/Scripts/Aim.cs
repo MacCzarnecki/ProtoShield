@@ -12,7 +12,7 @@ public class Aim : MonoBehaviour
     public GameObject _lightning;
     private GameObject lightning;
 
-    RaycastHit2D hit;
+    RaycastHit2D[] hits;
 
     public float countdownStart;
     
@@ -31,7 +31,7 @@ public class Aim : MonoBehaviour
         {
             Vector2 direction = player.transform.position - transform.position;
             transform.rotation = Quaternion.LookRotation(Vector3.back, direction);
-            hit = Physics2D.Raycast(transform.position, direction, direction.magnitude);
+            hits = Physics2D.RaycastAll(transform.position, direction, direction.magnitude);
             //Debug.DrawRay(transform.position, direction, Color.green);
 
             if(animator.GetCurrentAnimatorClipInfo(0).Length == 0 || animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Loading")
@@ -48,17 +48,20 @@ public class Aim : MonoBehaviour
     private void LeadLazer(Vector2 direction, bool blink)
     {
         if(!blink)
+        foreach(RaycastHit2D hit in hits)
             if(hit.collider == player.GetComponentInChildren<PolygonCollider2D>())
             {   
                 Vector2 lazer = hit.point - new Vector2(transform.position.x, transform.position.y);
                 Debug.DrawRay(transform.position, lazer, Color.red);
                 onBlock = true;
+                break;
             }
             else
             {
                 Debug.DrawRay(transform.position, direction, Color.green);
                 onBlock = false;
             }
+    
         else
         {
             float frame = animator.GetCurrentAnimatorStateInfo(0).normalizedTime % 1.0f;
@@ -69,7 +72,7 @@ public class Aim : MonoBehaviour
                 lightning = Instantiate(_lightning, Vector3.zero, Quaternion.identity);
                 lightning.GetComponent<Lazer>().SetRenderer(player.transform.position, transform.position);
             }
-
+            foreach(RaycastHit2D hit in hits)
             if(frame >= 0.5f)
             {
                 if(hit.collider == player.GetComponentInChildren<PolygonCollider2D>())
@@ -77,6 +80,7 @@ public class Aim : MonoBehaviour
                     Vector2 lazer = hit.point - new Vector2(transform.position.x, transform.position.y);
                     Debug.DrawRay(transform.position, lazer, Color.white);
                     onBlock = true;
+                    break;
                 }
                 else
                 {
@@ -91,6 +95,7 @@ public class Aim : MonoBehaviour
                     Vector2 lazer = hit.point - new Vector2(transform.position.x, transform.position.y);
                     Debug.DrawRay(transform.position, lazer, Color.red);
                     onBlock = true;
+                    break;
                 }
                 else
                 {
@@ -103,13 +108,18 @@ public class Aim : MonoBehaviour
 
     public Vector3 GetHitPoint()
     {
-        return hit.point;
+        foreach(RaycastHit2D hit in hits)
+            if(hit.collider == player.GetComponentInChildren<PolygonCollider2D>())
+                return hit.point;
+        return Vector3.zero;
     }
     public void Shoot()
     {
         animator.Play("Firing", 0);
         lightning = Instantiate(_lightning, Vector3.zero, Quaternion.identity);
-        lightning.GetComponent<Lazer>().SetRenderer(hit.point, transform.position);
+        foreach(RaycastHit2D hit in hits)
+            if(hit.collider == player.GetComponentInChildren<PolygonCollider2D>())
+                lightning.GetComponent<Lazer>().SetRenderer(hit.point, transform.position);
     }
 
     public void onDestroy()

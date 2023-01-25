@@ -5,13 +5,20 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     // Start is called before the first frame update
-    public float maxSpeed = 7;
-    public float jumpTakeOffSpeed = 7;
-    public bool grounded => rb.IsTouching(ContactFilter);
+    public float maxSpeed;
+    public float jumpTakeOffSpeed;
+    public bool grounded => rb.IsTouching(GroundFilter);
+
+    public bool blockedRight => rb.IsTouching(RightFilter);
+
+    public bool blockedLeft => rb.IsTouching(LeftFilter);
     public int maxHealth;
     public int currentHealth;
 
-    public ContactFilter2D ContactFilter;
+    public ContactFilter2D GroundFilter;
+
+    public ContactFilter2D RightFilter;
+    public ContactFilter2D LeftFilter;
     public CompositeCollider2D ground;
 
     RaycastHit2D hit;
@@ -51,41 +58,21 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown("w") && grounded) {
             rb.velocity = new Vector2(rb.velocity.x,jumpTakeOffSpeed);
         }
-        if (Input.GetKey("d")) {
-            rb.velocity = new Vector2(2.0f,rb.velocity.y);
+        if (Input.GetKey("d") && !blockedRight) {
+            rb.velocity = new Vector2(maxSpeed,rb.velocity.y);
         }
-        if (Input.GetKey("a")) {
-            rb.velocity = new Vector2(-2.0f,rb.velocity.y);
+        else if(rb.velocity.x > 0.0f)
+        {
+            rb.velocity = new Vector2(rb.velocity.x/3*2, rb.velocity.y);
         }
+        if (Input.GetKey("a") && !blockedLeft) {
+            rb.velocity = new Vector2(-maxSpeed,rb.velocity.y);
+        }
+        else if(rb.velocity.x < 0.0f)
+            rb.velocity = new Vector2(rb.velocity.x/3*2, rb.velocity.y);
         //ComputeVelocity (); 
     }
 
-    /*private void ComputeVelocity()
-    {
-        Vector2 move = Vector2.zero;
-
-        move.x = Input.GetAxis ("Horizontal");
-
-        if (Input.GetButtonDown ("Jump") && grounded) {
-            velocity.y = jumpTakeOffSpeed;
-        } else if (Input.GetButtonUp ("Jump")) 
-        {
-            if (velocity.y > 0) {
-                velocity.y = velocity.y * 0.5f;
-            }
-        }
-
-        bool flipSprite = (spriteRenderer.flipX ? (move.x > 0.01f) : (move.x < 0.01f));
-        if (flipSprite) 
-        {
-            spriteRenderer.flipX = !spriteRenderer.flipX;
-        }
-
-        animator.SetBool ("grounded", grounded);
-        animator.SetFloat ("velocityX", Mathf.Abs (velocity.x) / maxSpeed);
-
-        targetVelocity = move * maxSpeed;
-    }*/
     private void FixedUpdate() 
     {
         

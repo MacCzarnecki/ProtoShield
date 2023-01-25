@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2237101071001836937}
   - component: {fileID: 2237101071001836936}
   - component: {fileID: 110287073751813969}
-  - component: {fileID: -6625812889970254583}
+  - component: {fileID: 4376654192664397638}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -121,11 +121,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98ee6e8469abc4f4880983f797b69ccc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 7
-  jumpTakeOffSpeed: 7
+  maxSpeed: 10
+  jumpTakeOffSpeed: 10
   maxHealth: 3
   currentHealth: 0
-  ContactFilter:
+  GroundFilter:
     useTriggers: 0
     useLayerMask: 0
     useDepth: 0
@@ -134,11 +134,39 @@ MonoBehaviour:
     useOutsideNormalAngle: 0
     layerMask:
       serializedVersion: 2
-      m_Bits: 2048
+      m_Bits: 0
     minDepth: 0
     maxDepth: 0
     minNormalAngle: 85
     maxNormalAngle: 95
+  RightFilter:
+    useTriggers: 0
+    useLayerMask: 0
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 1
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 0
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: 175
+    maxNormalAngle: 185
+  LeftFilter:
+    useTriggers: 0
+    useLayerMask: 0
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 1
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 0
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: -5
+    maxNormalAngle: 5
   ground: {fileID: 0}
   _heart: {fileID: 2705080760402699528, guid: befac53658f91aa47b3c4974944753fd, type: 3}
 --- !u!50 &110287073751813969
@@ -156,14 +184,14 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!70 &-6625812889970254583
-CapsuleCollider2D:
+--- !u!61 &4376654192664397638
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -175,9 +203,19 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.01, y: 0}
-  m_Size: {x: 1.02, y: 1.6}
-  m_Direction: 0
+  m_Offset: {x: 0.049064457, y: -0.28663185}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.6, y: 1.6}
+    newSize: {x: 1.6, y: 1.6}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.0112249, y: 1.0267365}
+  m_EdgeRadius: 0
 --- !u!1001 &3273941131630910135
 PrefabInstance:
   m_ObjectHideFlags: 0

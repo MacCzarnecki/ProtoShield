@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System;
+using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class Scheduler : MonoBehaviour
@@ -103,7 +104,7 @@ public class Scheduler : MonoBehaviour
             return;
         if(SavedData.Count >= 15)
         {
-            string outputString = "{\n\"data\": [";
+            /*string outputString = "{\n\"data\": [";
             foreach(Json json in SavedData)
             {
                 outputString += "\n" + JsonUtility.ToJson(json) + ",";
@@ -112,7 +113,7 @@ public class Scheduler : MonoBehaviour
             outputString += "\n]\n}";
             int health = player.GetComponent<PlayerController>().currentHealth;
             //outputString += health == 1 ? "1 life remains" : health.ToString() + " lives remain";
-            File.WriteAllText("result.json", outputString);
+            File.WriteAllText("result.json", outputString);*/
             SaveToCSV();
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -162,22 +163,26 @@ public class Scheduler : MonoBehaviour
         {
             File.Delete(ruta);
         }
+        
         var sr = File.CreateText(ruta);
+        sr.Close();
+        FileInfo fInfo = new FileInfo(ruta);
+        fInfo.IsReadOnly = false;
+        var firstLine = "Angle, Time, Shield_Angle";
+        var csv = new StringBuilder();
+        csv.AppendLine(firstLine);
 
-        string datosCSV = "angle, time, shield angle" + "\r\n";
+        //writer.Write("Angle, Time, Shield Angle");
+        //writer.Write(System.Environment.NewLine);
+
         foreach(Json json in SavedData)
         {
-            datosCSV += String.Format("{0},{1},{2}\r\n", json.angle.ToString("0.00").Replace(',','.'), json.time.ToString("0.00000").Replace(',','.'), json.shieldAngle);
+            var line = String.Format("{0}, {1}, {2}", json.angle.ToString("0.00").Replace(',','.'), json.time.ToString("0.00000").Replace(',','.'), json.shieldAngle);
+            csv.AppendLine(line);
         }
 
-        sr.WriteLine(datosCSV);
-
-        FileInfo fInfo = new FileInfo(ruta);
-        fInfo.IsReadOnly = true;
-    
-        //Cerrar
-        sr.Close(); 
-
+        File.WriteAllText(ruta, csv.ToString());
+        
         Application.OpenURL(ruta);
 
     }
