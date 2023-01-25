@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 2237101071001836939}
   - component: {fileID: 2237101071001836937}
   - component: {fileID: 2237101071001836936}
-  - component: {fileID: 5711908744410197008}
   - component: {fileID: 110287073751813969}
+  - component: {fileID: -6625812889970254583}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -121,35 +121,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98ee6e8469abc4f4880983f797b69ccc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxSpeed: 7
+  jumpTakeOffSpeed: 7
   maxHealth: 3
   currentHealth: 0
+  ContactFilter:
+    useTriggers: 0
+    useLayerMask: 0
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 1
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 2048
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: 85
+    maxNormalAngle: 95
+  ground: {fileID: 0}
   _heart: {fileID: 2705080760402699528, guid: befac53658f91aa47b3c4974944753fd, type: 3}
---- !u!61 &5711908744410197008
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2237101071001836942}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.050690696, y: -0.6046677}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.6, y: 1.6}
-    newSize: {x: 1.6, y: 1.6}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.0061945, y: 0.39066446}
-  m_EdgeRadius: 0
 --- !u!50 &110287073751813969
 Rigidbody2D:
   serializedVersion: 4
@@ -158,7 +149,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2237101071001836942}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -171,6 +162,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!70 &-6625812889970254583
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2237101071001836942}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.01, y: 0}
+  m_Size: {x: 1.02, y: 1.6}
+  m_Direction: 0
 --- !u!1001 &3273941131630910135
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -237,6 +244,10 @@ PrefabInstance:
     - target: {fileID: 6857800269566908853, guid: 3369fe1501e50bb4aa6063d525b97287, type: 3}
       propertyPath: m_Name
       value: Shield
+      objectReference: {fileID: 0}
+    - target: {fileID: 6944044362944530316, guid: 3369fe1501e50bb4aa6063d525b97287, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8627872115494756631, guid: 3369fe1501e50bb4aa6063d525b97287, type: 3}
       propertyPath: radius

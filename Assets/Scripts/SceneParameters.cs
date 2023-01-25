@@ -4,6 +4,7 @@ using UnityEngine;
 
 public static class SceneParameters
 {
+    public static bool enableMovement {get; set;} = false;
     public static int ShieldDegrees { get; set; } = 60;
 
     public static ShieldController.Control control {get; set;} = ShieldController.Control.X_Axis;

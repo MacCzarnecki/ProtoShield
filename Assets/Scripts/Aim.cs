@@ -8,7 +8,7 @@ public class Aim : MonoBehaviour
     public GameObject Spark;
     private Animator animator;
     public bool onBlock = false;
-
+    
     public GameObject _lightning;
     private GameObject lightning;
 
