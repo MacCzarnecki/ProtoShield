@@ -28,7 +28,7 @@ public class TurretMovement : MonoBehaviour
         offset = Vector3.Cross(direction, Vector3.back).normalized * offsetMultiplier;
         Vector3 newPosition = transform.position + direction * speed;
         isInCameraRange(newPosition.x, newPosition.y);
-        if((newPosition - player.transform.position).magnitude < 2.0f)
+        if((newPosition - player.transform.position).magnitude < 3.0f)
         {
             direction = Vector3.Reflect(direction,transform.position - player.transform.position);
             direction.Normalize();

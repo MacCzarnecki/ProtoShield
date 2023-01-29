@@ -122,7 +122,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 10
-  jumpTakeOffSpeed: 10
+  jumpTakeOffSpeed: 16
+  grounded: 0
   maxHealth: 3
   currentHealth: 0
   GroundFilter:
@@ -168,6 +169,7 @@ MonoBehaviour:
     minNormalAngle: -5
     maxNormalAngle: 5
   ground: {fileID: 0}
+  endGoal: {fileID: 4195347896576928860, guid: f60f1f19560dcd141a75c3acd79d83f5, type: 3}
   _heart: {fileID: 2705080760402699528, guid: befac53658f91aa47b3c4974944753fd, type: 3}
 --- !u!50 &110287073751813969
 Rigidbody2D:
@@ -184,7 +186,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 2
+  m_GravityScale: 3
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1

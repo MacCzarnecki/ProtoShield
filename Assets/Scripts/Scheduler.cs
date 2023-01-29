@@ -113,7 +113,24 @@ public class Scheduler : MonoBehaviour
             outputString += "\n]\n}";
             int health = player.GetComponent<PlayerController>().currentHealth;
             //outputString += health == 1 ? "1 life remains" : health.ToString() + " lives remain";
-            File.WriteAllText("result.json", outputString);*/
+            string path = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/')) + "\\data\\";
+            if(SceneParameters.control == ShieldController.Control.X_Axis)
+                path += "X-Axis\\";
+            else if(SceneParameters.control == ShieldController.Control.MouseWheel)
+                path += "Wheel\\";
+            else
+                path += "Arrows\\";
+
+            if(SceneParameters.scene == MenuController.LoadedScene.Static)
+                path += "Static\\";
+            else if(SceneParameters.scene == MenuController.LoadedScene.Dynamic)
+                path += "Dynamic\\";
+            else
+                path += "Platform\\";
+
+            var info = new DirectoryInfo(path);
+            
+            File.WriteAllText(path + info.GetFiles().Length.ToString() + ".json", outputString);*/
             SaveToCSV();
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -122,6 +139,13 @@ public class Scheduler : MonoBehaviour
             Destroy(player);
             Destroy(platform);
             Destroy(enemy);
+            if(SceneParameters.isDemo)
+        {
+            if(SceneParameters.ShieldDegrees == 45)
+                SceneParameters.ShieldDegrees = 25;
+            else
+                SceneParameters.ShieldDegrees = 15;
+        }
             isEnd = true;
         }
         else if(player == null || player.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Death")
@@ -158,33 +182,36 @@ public class Scheduler : MonoBehaviour
 
     void SaveToCSV()
     {
-        string ruta = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/')) + "/data/" + "result.csv";
-        if (File.Exists(ruta))
+        string path = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/')) + "\\data\\";
+            if(SceneParameters.control == ShieldController.Control.X_Axis)
+                path += "X-Axis\\";
+            else if(SceneParameters.control == ShieldController.Control.MouseWheel)
+                path += "Wheel\\";
+            else
+                path += "Arrows\\";
+
+            if(SceneParameters.scene == MenuController.LoadedScene.Static)
+                path += "Static\\result.csv";
+            else if(SceneParameters.scene == MenuController.LoadedScene.Dynamic)
+                path += "Dynamic\\result.csv";
+            else
+                path += "Platform\\result.csv";
+
+
+        if (!File.Exists(path))
         {
-            File.Delete(ruta);
+            var firstLine = "Angle, Time, Shield_Angle" + Environment.NewLine;
+            File.WriteAllText(path, firstLine);
         }
-        
-        var sr = File.CreateText(ruta);
-        sr.Close();
-        FileInfo fInfo = new FileInfo(ruta);
-        fInfo.IsReadOnly = false;
-        var firstLine = "Angle, Time, Shield_Angle";
-        var csv = new StringBuilder();
-        csv.AppendLine(firstLine);
 
         //writer.Write("Angle, Time, Shield Angle");
         //writer.Write(System.Environment.NewLine);
 
         foreach(Json json in SavedData)
         {
-            var line = String.Format("{0}, {1}, {2}", json.angle.ToString("0.00").Replace(',','.'), json.time.ToString("0.00000").Replace(',','.'), json.shieldAngle);
-            csv.AppendLine(line);
+            var line = String.Format("{0}, {1}, {2}", json.angle.ToString("0.00").Replace(',','.'), json.time.ToString("0.00000").Replace(',','.'), json.shieldAngle) + Environment.NewLine;
+            File.AppendAllText(path, line);
         }
-
-        File.WriteAllText(ruta, csv.ToString());
-        
-        Application.OpenURL(ruta);
-
     }
     void makeNewTurret()
     {
@@ -192,10 +219,11 @@ public class Scheduler : MonoBehaviour
 
         float radius = 5.0f;
 
-        float radian = UnityEngine.Random.Range(0.0f, 1.0f);
+        System.Random rnd = new System.Random();
+        double radian = rnd.NextDouble();
 
-        float xScaled = Mathf.Cos(radian * 2 * Mathf.PI);
-        float yScaled = Mathf.Sin(radian * 2 * Mathf.PI);
+        float xScaled = Mathf.Cos((float)radian * 2 * Mathf.PI);
+        float yScaled = Mathf.Sin((float)radian * 2 * Mathf.PI);
 
         float x = player.transform.position.x + xScaled * radius;
         float y = player.transform.position.y + yScaled * radius;
@@ -218,7 +246,7 @@ public class Scheduler : MonoBehaviour
     void onClick()
     {
 
-        if(enemy != null && enemy.GetComponent<Aim>().onBlock && enemy.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Firing")
+        if(enemy != null && enemy.GetComponent<Aim>().onBlock)
         {
             SavedData.Add(new Json
             {

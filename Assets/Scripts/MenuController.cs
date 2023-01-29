@@ -6,6 +6,10 @@ using UnityEngine.SceneManagement;
 public class MenuController : MonoBehaviour
 {
     public enum Control{Selected, NotSelected};
+
+    public enum LoadedScene{Static, Dynamic, Platform};
+
+    private LoadedScene scene;
     // Start is called before the first frame update
     public LayerMask mask;
     RaycastHit2D hit;
@@ -18,13 +22,16 @@ public class MenuController : MonoBehaviour
     
     private GameObject selectedButton;
 
+    public GameObject sceneButton;
+
 
     void Start()
     {
+        scene = LoadedScene.Static;
         animator = GetComponent<Animator>();
         foreach(Transform child in transform)
         {
-            if(child.gameObject.name == "Easy" || child.gameObject.name == "Medium" || child.gameObject.name == "Hard")
+            if(child.gameObject.name == "Easy" || child.gameObject.name == "Medium" || child.gameObject.name == "Hard" || child.name == "Back")
                 child.gameObject.SetActive(false);
         }
     }
@@ -36,7 +43,19 @@ public class MenuController : MonoBehaviour
         hit = Physics2D.Raycast(cam.ScreenToWorldPoint(Input.mousePosition), direction, direction.magnitude);
         
         buttons.Clear();
-
+        switch(scene) 
+        {
+            case LoadedScene.Static:
+                sceneButton.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/UI/Static Button") as Sprite;
+                break;
+            case LoadedScene.Dynamic:
+                sceneButton.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/UI/Dynamic Button") as Sprite;
+                break;
+            case LoadedScene.Platform:
+                sceneButton.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/UI/Platform Button") as Sprite;
+                break;
+        }       
+        
         foreach(Transform child in transform)
         {
             if(hit.transform == child)
@@ -58,12 +77,13 @@ public class MenuController : MonoBehaviour
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("Slide"))
                 foreach(GameObject button in buttons.Keys)
                     button.SetActive(false);
+
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("End"))
         {
             animator.enabled = false;
             foreach(GameObject button in buttons.Keys)
             {
-                if(button.name == "Easy" || button.name == "Medium" || button.name == "Hard")
+                if(button.name == "Easy" || button.name == "Medium" || button.name == "Hard" || button.name == "Back")
                     button.SetActive(true);
                 else
                     button.SetActive(false);
@@ -81,6 +101,43 @@ public class MenuController : MonoBehaviour
                             SceneParameters.control = ShieldController.Control.MouseWheel;
                         if(button.Key.name.Equals("Arrows"))
                             SceneParameters.control = ShieldController.Control.Arrows;
+                        if(button.Key.name.Equals("Demo"))
+                        {
+                            SceneParameters.isDemo = true;
+                            switch(scene)
+                            {
+                                case LoadedScene.Static:
+                                    SceneManager.LoadScene("Assets/scenes/Static Scene.unity");
+                                    break;
+                                case LoadedScene.Dynamic:
+                                    SceneManager.LoadScene("Assets/scenes/Dynamic Scene.unity");
+                                    break;
+                                case LoadedScene.Platform:
+                                    SceneManager.LoadScene("Assets/scenes/Platform Scene.unity");
+                                    break;
+                            }
+                        }
+                        if(button.Key.name.Equals("Right"))
+                        {
+                            if(scene == LoadedScene.Platform)
+                                scene = LoadedScene.Static;
+                            else
+                                scene++;
+                            return;
+                        }
+                        if(button.Key.name.Equals("Left"))
+                        {
+                            if(scene == LoadedScene.Static)
+                                scene = LoadedScene.Platform;
+                            else
+                                scene--;
+                            return;
+                        }
+                        if(button.Key.name.Equals("Exit"))
+                        {
+                            Application.Quit();
+                            return;
+                        }
                         animator.Play("Slide", 0);
                     }
             if(animator.GetCurrentAnimatorStateInfo(0).IsName("End"))
@@ -93,6 +150,20 @@ public class MenuController : MonoBehaviour
                             SceneParameters.ShieldDegrees = 25;
                         if(button.Key.name.Equals("Hard"))
                             SceneParameters.ShieldDegrees = 15;
+                        if(button.Key.name.Equals("Back"))
+                        {
+                            animator.enabled = true;
+                            foreach(GameObject b in buttons.Keys)
+                            {
+                                if(b.name == "Easy" || b.name == "Medium" || b.name == "Hard" || b.name == "Back")
+                                    b.SetActive(false);
+                                else
+                                    b.SetActive(true);
+                            }
+                            
+                            animator.Play("Idle", 0);
+                            return;
+                        }
                         StartCoroutine(Wait());
                     }
             //SceneManager.UnloadSceneAsync("Assets/scenes/Menu.unity");
@@ -102,7 +173,20 @@ public class MenuController : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
 
-        SceneManager.LoadScene("Assets/scenes/Static Scene.unity");
+        SceneParameters.scene = scene;
+
+        switch(scene) 
+        {
+            case LoadedScene.Static:
+                SceneManager.LoadScene("Assets/scenes/Static Scene.unity");
+                break;
+            case LoadedScene.Dynamic:
+                SceneManager.LoadScene("Assets/scenes/Dynamic Scene.unity");
+                break;
+            case LoadedScene.Platform:
+                SceneManager.LoadScene("Assets/scenes/Platform Scene.unity");
+                break;
+        }
     }
 
 }

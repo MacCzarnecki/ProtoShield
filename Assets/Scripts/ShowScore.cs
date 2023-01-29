@@ -11,6 +11,7 @@ public class ShowScore : MonoBehaviour
     public TMP_Text field;
     public Canvas canvas;
 
+    public GameObject ContinueButton;
     public GameObject QuitButton;
     private string text = "Score\n";
     void Start()
@@ -20,6 +21,8 @@ public class ShowScore : MonoBehaviour
     }
     private void Awake() {
         text = "Score\n";
+        if(!SceneParameters.isDemo || SceneParameters.ShieldDegrees == 15)
+            ContinueButton.SetActive(false);
     }
     public void RenderText(List<Scheduler.Json> _list)
     {
@@ -27,6 +30,7 @@ public class ShowScore : MonoBehaviour
         {
             text += String.Format("<cspace=0.1em>{0,2}.</cspace> Angle: <cspace=0.1em>{1,5:F2}°</cspace> Time: <cspace=0.1em>{2:F5}</cspace> s\n",(i + 1) , _list[i].angle, _list[i].time);
         }  
+        
     }
     // Update is called once per frame
     void Update()
@@ -43,6 +47,16 @@ public class ShowScore : MonoBehaviour
             }
             else
                 QuitButton.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/UI/Quit Button") as Sprite;
+
+            if(hit.transform != null && hit.transform.gameObject == ContinueButton)
+            {
+                if(Input.GetMouseButtonDown(0))
+                     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                //endMenu.GetComponentInChildren<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/UI/Quit Button (Selected)") as Sprite;
+                ContinueButton.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/UI/Continue Button (Selected)") as Sprite;
+            }
+            else
+                ContinueButton.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/UI/Continue Button") as Sprite;
             return;
     }
 }

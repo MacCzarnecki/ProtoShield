@@ -7,19 +7,20 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     public float maxSpeed;
     public float jumpTakeOffSpeed;
-    public bool grounded => rb.IsTouching(GroundFilter);
+    public bool grounded;
 
     public bool blockedRight => rb.IsTouching(RightFilter);
 
     public bool blockedLeft => rb.IsTouching(LeftFilter);
     public int maxHealth;
     public int currentHealth;
-
     public ContactFilter2D GroundFilter;
 
     public ContactFilter2D RightFilter;
     public ContactFilter2D LeftFilter;
     public CompositeCollider2D ground;
+
+    public GameObject endGoal;
 
     RaycastHit2D hit;
     Animator animator;
@@ -35,7 +36,8 @@ public class PlayerController : MonoBehaviour
         hearts = new GameObject[maxHealth];
         for(int i = 0; i < hearts.Length; i++)
         {
-            hearts[i] = Instantiate(_heart, new Vector3(14.0f - 2.5f * i, 5.0f, 0.0f), Quaternion.identity);
+            hearts[i] = Instantiate(_heart, new Vector3(10.0f - 2.5f * i, 5.0f, 0.0f), Quaternion.identity);
+            hearts[i].transform.parent = Camera.main.transform;
         }
     }
     void Start()
@@ -46,6 +48,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Update() {
+        grounded = rb.IsTouching(GroundFilter);
         for(int i = maxHealth - 1; i >= 0; i--)
         {
             if(currentHealth < i + 1)
@@ -55,8 +58,11 @@ public class PlayerController : MonoBehaviour
         }
         if(currentHealth == 0) Die();
 
+        if(SceneParameters.scene != MenuController.LoadedScene.Platform) return;
+
         if (Input.GetKeyDown("w") && grounded) {
-            rb.velocity = new Vector2(rb.velocity.x,jumpTakeOffSpeed);
+            rb.AddForce(new Vector2(0.0f, jumpTakeOffSpeed), ForceMode2D.Impulse);
+            grounded = false;
         }
         if (Input.GetKey("d") && !blockedRight) {
             rb.velocity = new Vector2(maxSpeed,rb.velocity.y);
@@ -70,7 +76,7 @@ public class PlayerController : MonoBehaviour
         }
         else if(rb.velocity.x < 0.0f)
             rb.velocity = new Vector2(rb.velocity.x/3*2, rb.velocity.y);
-        //ComputeVelocity (); 
+
     }
 
     private void FixedUpdate() 
@@ -84,6 +90,11 @@ public class PlayerController : MonoBehaviour
         animator.Play("Death", 0);
         transform.GetChild(0).gameObject.SetActive(false);
         Destroy(gameObject, animator.GetCurrentAnimatorClipInfo(0)[0].clip.length);
+    }
+    
+    public bool IsAtEnd()
+    {
+        return (transform.position - endGoal.transform.position).magnitude < 1.0f;
     }
 
     void OnDestroy() {

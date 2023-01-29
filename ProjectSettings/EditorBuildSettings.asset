@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Static Scene.unity
     guid: 9d45bdd297292da4cb988ac2520c9465
+  - enabled: 1
+    path: Assets/Scenes/Platform Scene.unity
+    guid: 90858618ae191e34fb297c477d0b77a5
+  - enabled: 1
+    path: Assets/Scenes/Dynamic Scene.unity
+    guid: 644eff1c1ecbe5545ab006ff74871894
   m_configObjects: {}
