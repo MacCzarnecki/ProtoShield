@@ -231,11 +231,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3173205373118732251, guid: 3369fe1501e50bb4aa6063d525b97287, type: 3}
       propertyPath: arrowSpeed
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3173205373118732251, guid: 3369fe1501e50bb4aa6063d525b97287, type: 3}
       propertyPath: wheelSpeed
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5196184542089831090, guid: 3369fe1501e50bb4aa6063d525b97287, type: 3}
       propertyPath: m_RootOrder

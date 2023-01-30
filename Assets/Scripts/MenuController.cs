@@ -31,9 +31,10 @@ public class MenuController : MonoBehaviour
         animator = GetComponent<Animator>();
         foreach(Transform child in transform)
         {
-            if(child.gameObject.name == "Easy" || child.gameObject.name == "Medium" || child.gameObject.name == "Hard" || child.name == "Back")
+            if(child.gameObject.name == "Easy" || child.gameObject.name == "Medium" || child.gameObject.name == "Hard" || child.name == "Back" || child.name == "Demo")
                 child.gameObject.SetActive(false);
         }
+        SceneParameters.isDemo = false;
     }
 
     // Update is called once per frame
@@ -83,7 +84,7 @@ public class MenuController : MonoBehaviour
             animator.enabled = false;
             foreach(GameObject button in buttons.Keys)
             {
-                if(button.name == "Easy" || button.name == "Medium" || button.name == "Hard" || button.name == "Back")
+                if(button.name == "Easy" || button.name == "Medium" || button.name == "Hard" || button.name == "Back" || button.name == "Demo")
                     button.SetActive(true);
                 else
                     button.SetActive(false);
@@ -101,22 +102,6 @@ public class MenuController : MonoBehaviour
                             SceneParameters.control = ShieldController.Control.MouseWheel;
                         if(button.Key.name.Equals("Arrows"))
                             SceneParameters.control = ShieldController.Control.Arrows;
-                        if(button.Key.name.Equals("Demo"))
-                        {
-                            SceneParameters.isDemo = true;
-                            switch(scene)
-                            {
-                                case LoadedScene.Static:
-                                    SceneManager.LoadScene("Assets/scenes/Static Scene.unity");
-                                    break;
-                                case LoadedScene.Dynamic:
-                                    SceneManager.LoadScene("Assets/scenes/Dynamic Scene.unity");
-                                    break;
-                                case LoadedScene.Platform:
-                                    SceneManager.LoadScene("Assets/scenes/Platform Scene.unity");
-                                    break;
-                            }
-                        }
                         if(button.Key.name.Equals("Right"))
                         {
                             if(scene == LoadedScene.Platform)
@@ -150,6 +135,23 @@ public class MenuController : MonoBehaviour
                             SceneParameters.ShieldDegrees = 25;
                         if(button.Key.name.Equals("Hard"))
                             SceneParameters.ShieldDegrees = 15;
+                        if(button.Key.name.Equals("Demo"))
+                        {
+                            SceneParameters.ShieldDegrees = 45;
+                            SceneParameters.isDemo = true;
+                            switch(scene)
+                            {
+                                case LoadedScene.Static:
+                                    SceneManager.LoadScene("Assets/scenes/Static Scene.unity");
+                                    break;
+                                case LoadedScene.Dynamic:
+                                    SceneManager.LoadScene("Assets/scenes/Dynamic Scene.unity");
+                                    break;
+                                case LoadedScene.Platform:
+                                    SceneManager.LoadScene("Assets/scenes/Platform Scene.unity");
+                                    break;
+                            }
+                        }
                         if(button.Key.name.Equals("Back"))
                         {
                             animator.enabled = true;

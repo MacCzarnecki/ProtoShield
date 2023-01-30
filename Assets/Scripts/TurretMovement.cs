@@ -47,7 +47,6 @@ public class TurretMovement : MonoBehaviour
         float screenAspect = (float)Screen.width / (float)Screen.height;
         float cameraHeight = Camera.main.orthographicSize + cameraPosition.y - .5f;
         float cameraWidth = screenAspect * Camera.main.orthographicSize + cameraPosition.x - .5f;
-        Debug.Log(cameraWidth.ToString() + cameraHeight.ToString());
         if(y > cameraHeight || y <  -(cameraHeight))
         {
             direction.y = -direction.y;

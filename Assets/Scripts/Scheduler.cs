@@ -104,33 +104,6 @@ public class Scheduler : MonoBehaviour
             return;
         if(SavedData.Count >= 15)
         {
-            /*string outputString = "{\n\"data\": [";
-            foreach(Json json in SavedData)
-            {
-                outputString += "\n" + JsonUtility.ToJson(json) + ",";
-            }
-            outputString = outputString.TrimEnd(',');
-            outputString += "\n]\n}";
-            int health = player.GetComponent<PlayerController>().currentHealth;
-            //outputString += health == 1 ? "1 life remains" : health.ToString() + " lives remain";
-            string path = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/')) + "\\data\\";
-            if(SceneParameters.control == ShieldController.Control.X_Axis)
-                path += "X-Axis\\";
-            else if(SceneParameters.control == ShieldController.Control.MouseWheel)
-                path += "Wheel\\";
-            else
-                path += "Arrows\\";
-
-            if(SceneParameters.scene == MenuController.LoadedScene.Static)
-                path += "Static\\";
-            else if(SceneParameters.scene == MenuController.LoadedScene.Dynamic)
-                path += "Dynamic\\";
-            else
-                path += "Platform\\";
-
-            var info = new DirectoryInfo(path);
-            
-            File.WriteAllText(path + info.GetFiles().Length.ToString() + ".json", outputString);*/
             SaveToCSV();
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -141,10 +114,8 @@ public class Scheduler : MonoBehaviour
             Destroy(enemy);
             if(SceneParameters.isDemo)
         {
-            if(SceneParameters.ShieldDegrees == 45)
-                SceneParameters.ShieldDegrees = 25;
-            else
-                SceneParameters.ShieldDegrees = 15;
+            if(SceneParameters.ShieldDegrees != 15)
+                SceneParameters.ShieldDegrees -= 5;
         }
             isEnd = true;
         }

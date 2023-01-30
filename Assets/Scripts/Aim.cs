@@ -32,6 +32,14 @@ public class Aim : MonoBehaviour
     private void FixedUpdate() {
         if(animator.GetCurrentAnimatorClipInfo(0).Length == 0 || animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Teleporting")
             Destroy(gameObject, 2.0f);
+        if(animator.GetCurrentAnimatorClipInfo(0).Length != 0 && animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Ready" && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 2.0f)
+        {
+            animator.Play("Firing", 0);
+            lightning = Instantiate(_lightning, Vector3.zero, Quaternion.identity);
+            lightning.GetComponent<Lazer>().SetRenderer(player.transform.position, transform.position);
+            player.GetComponent<PlayerController>().TakeDamage();
+            line.enabled = false; 
+        }
         if(player == null) return;
         Vector2 direction = player.transform.position - transform.position;
         transform.rotation = Quaternion.LookRotation(Vector3.back, direction);
@@ -74,7 +82,10 @@ public class Aim : MonoBehaviour
         line.enabled = false; 
         foreach(RaycastHit2D hit in hits)
             if(hit.collider == player.GetComponentInChildren<PolygonCollider2D>())
+            {
                 lightning.GetComponent<Lazer>().SetRenderer(hit.point, transform.position);
+                return;
+            }
     }
 
     public string AnimationState()

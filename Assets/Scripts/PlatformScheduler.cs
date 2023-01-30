@@ -36,6 +36,8 @@ public class PlatformScheduler : MonoBehaviour
     private GameObject player;
     private List<GameObject> lightnings;
 
+    private int playerHealth;
+
     public List<float> distanceAngle;
     // Start is called before the first frame update
     public List<float> measuredTime;
@@ -44,8 +46,11 @@ public class PlatformScheduler : MonoBehaviour
     public float countdownStart;
     private bool isEnd;
     private GameObject endMenu;
+
+    private bool isTurretActive;
     void Awake()
     {
+        isTurretActive = false;
         SavedData = new List<Scheduler.Json>();
         countdownStart = 0.0f;
         isEnd = false;
@@ -54,6 +59,8 @@ public class PlatformScheduler : MonoBehaviour
         player.GetComponent<PlayerController>().endGoal = EndGoal;
         player.GetComponentInChildren<DrawCircle>().degrees = SceneParameters.ShieldDegrees;
         player.GetComponentInChildren<ShieldController>().control = SceneParameters.control;
+        playerHealth = 3;
+        
         if(SceneParameters.control == ShieldController.Control.X_Axis)
         {
             Destroy(Instantiate(X_Axis_Tutorial, new Vector3(-3.0f, -4.5f, 0.0f), Quaternion.identity), 3.0f);
@@ -83,12 +90,21 @@ public class PlatformScheduler : MonoBehaviour
     }
     void Update()
     {
+        if(playerHealth > player.GetComponent<PlayerController>().currentHealth)
+        {
+            playerHealth = player.GetComponent<PlayerController>().currentHealth;
+            isTurretActive = false;
+        }
+
         foreach(GameObject turret in turrets)
         {
-            countdownStart = Time.time;
-            if(turret != null && turret.activeSelf && (turret.transform.position - player.transform.position).magnitude < 10.0f)
+            if(turret != null && !isTurretActive && (turret.transform.position - player.transform.position).magnitude < 6.0f)
             {
+                countdownStart = Time.time;
+
                 turret.SetActive(true);
+
+                isTurretActive = true;
 
                 Vector2 shieldAngle = player.GetComponentInChildren<PolygonCollider2D>().bounds.center - player.transform.position;
 
@@ -125,22 +141,14 @@ public class PlatformScheduler : MonoBehaviour
 
         if(player.GetComponent<PlayerController>().IsAtEnd())
         {
-            Camera.main.transform.position = new Vector3(-5.0f, -1.0f, -10.0f);
+            Camera.main.transform.position = new Vector3(-6.0f, -1.0f, -10.0f);
             foreach(GameObject obj in UnityEngine.Object.FindObjectsOfType(typeof(GameObject)))
             {
                 if(obj.name != "Main Camera")
                     obj.SetActive(false);
             }
-            string outputString = "{\n\"data\": [";
-            foreach(Scheduler.Json json in SavedData)
-            {
-                outputString += "\n" + JsonUtility.ToJson(json) + ",";
-            }
-            outputString = outputString.TrimEnd(',');
-            outputString += "\n]\n}";
-            int health = player.GetComponent<PlayerController>().currentHealth;
+            SaveToCSV();
             //outputString += health == 1 ? "1 life remains" : health.ToString() + " lives remain";
-            File.WriteAllText("result.json", outputString);
             //SaveToCSV();
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -167,7 +175,39 @@ public class PlatformScheduler : MonoBehaviour
         Camera.main.transform.position += new Vector3((player.transform.position.x - Camera.main.transform.position.x)/ 15, (player.transform.position.y + 1.0f - Camera.main.transform.position.y)/ 20, 0.0f);
         FadeLightning();
     }
+    void SaveToCSV()
+        {
+            string path = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/')) + "\\data\\";
+                if(SceneParameters.control == ShieldController.Control.X_Axis)
+                    path += "X-Axis\\";
+                else if(SceneParameters.control == ShieldController.Control.MouseWheel)
+                    path += "Wheel\\";
+                else
+                    path += "Arrows\\";
 
+                if(SceneParameters.scene == MenuController.LoadedScene.Static)
+                    path += "Static\\result.csv";
+                else if(SceneParameters.scene == MenuController.LoadedScene.Dynamic)
+                    path += "Dynamic\\result.csv";
+                else
+                    path += "Platform\\result.csv";
+
+
+            if (!File.Exists(path))
+            {
+                var firstLine = "Angle, Time, Shield_Angle" + Environment.NewLine;
+                File.WriteAllText(path, firstLine);
+            }
+
+            //writer.Write("Angle, Time, Shield Angle");
+            //writer.Write(System.Environment.NewLine);
+
+            foreach(Scheduler.Json json in SavedData)
+            {
+                var line = String.Format("{0}, {1}, {2}", json.angle.ToString("0.00").Replace(',','.'), json.time.ToString("0.00000").Replace(',','.'), json.shieldAngle) + Environment.NewLine;
+                File.AppendAllText(path, line);
+            }
+        }
     void FadeLightning()
     {
         for(int i = 0; i < lightnings.Count; i++)
@@ -178,43 +218,15 @@ public class PlatformScheduler : MonoBehaviour
             }
     }
 
-    void SaveToCSV()
-    {
-        string ruta = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/')) + "/data/" + "result.csv";
-        if (File.Exists(ruta))
-        {
-            File.Delete(ruta);
-        }
-        
-        var sr = File.CreateText(ruta);
-        sr.Close();
-        FileInfo fInfo = new FileInfo(ruta);
-        fInfo.IsReadOnly = false;
-        var firstLine = "Angle, Time, Shield_Angle";
-        var csv = new StringBuilder();
-        csv.AppendLine(firstLine);
-
-        //writer.Write("Angle, Time, Shield Angle");
-        //writer.Write(System.Environment.NewLine);
-
-        foreach(Scheduler.Json json in SavedData)
-        {
-            var line = String.Format("{0}, {1}, {2}", json.angle.ToString("0.00").Replace(',','.'), json.time.ToString("0.00000").Replace(',','.'), json.shieldAngle);
-            csv.AppendLine(line);
-        }
-
-        File.WriteAllText(ruta, csv.ToString());
-
-    }
-
     void onClick()
     {
-        if((!Input.GetMouseButtonDown(0) && (SceneParameters.control == ShieldController.Control.X_Axis || SceneParameters.control == ShieldController.Control.MouseWheel)) ||
+        if((Input.GetMouseButtonDown(0) && (SceneParameters.control == ShieldController.Control.X_Axis || SceneParameters.control == ShieldController.Control.MouseWheel)) ||
         (Input.GetKeyDown("space") && SceneParameters.control == ShieldController.Control.Arrows))
-            foreach(GameObject turret in turrets)
-            {
-                if(turret != null && (turret.GetComponent<Aim>().onBlock && turret.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && turret.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Firing"))
+        for(int i = 0; i < turrets.Count; i++)
+        {
+            if(turrets[i] != null && (turrets[i].GetComponent<Aim>().onBlock && turrets[i].GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && turrets[i].GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Firing"))
                 {
+                    isTurretActive = false;
                     SavedData.Add(new Scheduler.Json
                     {
                         time = Time.time - countdownStart,
@@ -225,11 +237,13 @@ public class PlatformScheduler : MonoBehaviour
                     player.GetComponentInChildren<DrawCircle>().Reflect();
                     lightnings.Add(Instantiate(lightning, Vector3.zero, Quaternion.identity));
                     lightnings.Add(Instantiate(lightning, Vector3.zero, Quaternion.identity));
-                    lightnings[lightnings.Count - 1].GetComponent<LightningBolt>().SetRenderer(player.transform.position, turret.GetComponent<Aim>().GetHitPoint(), true);
-                    lightnings[lightnings.Count - 2].GetComponent<LightningBolt>().SetRenderer(player.transform.position, turret.GetComponent<Aim>().GetHitPoint(), false);
-                    Destroy(Instantiate<GameObject>(Spark, turret.GetComponent<Aim>().GetHitPoint(), turret.transform.rotation), 0.4f);
-                    turret.GetComponent<Aim>().Shoot();
+                    lightnings[lightnings.Count - 1].GetComponent<LightningBolt>().SetRenderer(player.transform.position, turrets[i].GetComponent<Aim>().GetHitPoint(), true);
+                    lightnings[lightnings.Count - 2].GetComponent<LightningBolt>().SetRenderer(player.transform.position, turrets[i].GetComponent<Aim>().GetHitPoint(), false);
+                    Destroy(Instantiate<GameObject>(Spark, turrets[i].GetComponent<Aim>().GetHitPoint(), turrets[i].transform.rotation), 0.4f);
+                    turrets[i].GetComponent<Aim>().Shoot();
+                    Destroy(turrets[i], 2.0f);
+                    turrets.RemoveAt(i);
                 }
-            }
+        }
     }
 }

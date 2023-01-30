@@ -48,8 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 6
-  wheelSpeed: 0.02
-  arrowSpeed: 0.005
+  wheelSpeed: 0.05
+  arrowSpeed: 0.003
   control: 0
 --- !u!120 &1544552208800965434
 LineRenderer:
