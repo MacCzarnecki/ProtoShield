@@ -15,8 +15,6 @@ public class Aim : MonoBehaviour
     private GameObject lightning;
 
     RaycastHit2D[] hits;
-
-    public float countdownStart;
     
     // Start is called before the first frame update
 
@@ -26,7 +24,6 @@ public class Aim : MonoBehaviour
         line.SetPosition(0, transform.position);
         line.SetPosition(1, player.transform.position);
         animator = GetComponent<Animator>();
-        countdownStart = Time.time;
     }
 
     private void FixedUpdate() {
@@ -41,9 +38,6 @@ public class Aim : MonoBehaviour
             line.enabled = false; 
         }
         if(player == null) return;
-        Vector2 direction = player.transform.position - transform.position;
-        transform.rotation = Quaternion.LookRotation(Vector3.back, direction);
-        hits = Physics2D.RaycastAll(transform.position, direction, direction.magnitude);
             //Debug.DrawRay(transform.position, direction, Color.green);
 
         LeadLazer();
@@ -51,6 +45,10 @@ public class Aim : MonoBehaviour
 
     private void LeadLazer()
     {
+        Vector2 direction = player.transform.position - transform.position;
+        transform.rotation = Quaternion.LookRotation(Vector3.back, direction);
+        hits = Physics2D.RaycastAll(transform.position, direction, direction.magnitude);
+
         line.SetPosition(0, transform.position);
         foreach(RaycastHit2D hit in hits)
             if(hit.collider == player.GetComponentInChildren<PolygonCollider2D>())
@@ -73,7 +71,7 @@ public class Aim : MonoBehaviour
         foreach(RaycastHit2D hit in hits)
             if(hit.collider == player.GetComponentInChildren<PolygonCollider2D>())
                 return hit.point;
-        return Vector3.zero;
+        return player.transform.position;
     }
     public void Shoot()
     {

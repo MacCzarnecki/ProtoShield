@@ -9,6 +9,5 @@ public static class SceneParameters
     public static int ShieldDegrees { get; set; } = 45;
 
     public static ShieldController.Control control {get; set;} = ShieldController.Control.X_Axis;
-
     public static MenuController.LoadedScene scene {get; set;} = MenuController.LoadedScene.Static;
-}
+};

@@ -84,7 +84,7 @@ public class MenuController : MonoBehaviour
             animator.enabled = false;
             foreach(GameObject button in buttons.Keys)
             {
-                if(button.name == "Easy" || button.name == "Medium" || button.name == "Hard" || button.name == "Back" || button.name == "Demo")
+                if(button.name == "Easy" || button.name == "Medium" || button.name == "Hard" || button.name == "Back" || button.name == "Demo" || button.name == "Left" || button.name == "Right")
                     button.SetActive(true);
                 else
                     button.SetActive(false);
@@ -129,28 +129,39 @@ public class MenuController : MonoBehaviour
                 foreach(var button in buttons)
                     if(button.Value == Control.Selected)
                     {
+                        if(button.Key.name.Equals("Right"))
+                        {
+                            if(scene == LoadedScene.Platform)
+                                scene = LoadedScene.Static;
+                            else
+                                scene++;
+                            return;
+                        }
+                        if(button.Key.name.Equals("Left"))
+                        {
+                            if(scene == LoadedScene.Static)
+                                scene = LoadedScene.Platform;
+                            else
+                                scene--;
+                            return;
+                        }
                         if(button.Key.name.Equals("Easy"))
+                        {
                             SceneParameters.ShieldDegrees = 45;
+                        }
                         if(button.Key.name.Equals("Medium"))
+                        {
                             SceneParameters.ShieldDegrees = 25;
+                        }
                         if(button.Key.name.Equals("Hard"))
+                        {
                             SceneParameters.ShieldDegrees = 15;
+                        }
                         if(button.Key.name.Equals("Demo"))
                         {
                             SceneParameters.ShieldDegrees = 45;
                             SceneParameters.isDemo = true;
-                            switch(scene)
-                            {
-                                case LoadedScene.Static:
-                                    SceneManager.LoadScene("Assets/scenes/Static Scene.unity");
-                                    break;
-                                case LoadedScene.Dynamic:
-                                    SceneManager.LoadScene("Assets/scenes/Dynamic Scene.unity");
-                                    break;
-                                case LoadedScene.Platform:
-                                    SceneManager.LoadScene("Assets/scenes/Platform Scene.unity");
-                                    break;
-                            }
+                            SceneParameters.scene = scene;
                         }
                         if(button.Key.name.Equals("Back"))
                         {
@@ -166,9 +177,32 @@ public class MenuController : MonoBehaviour
                             animator.Play("Idle", 0);
                             return;
                         }
-                        StartCoroutine(Wait());
+                        if(button.Key.name.Equals("Left"))
+                        {
+                            if(scene == LoadedScene.Static)
+                                scene = LoadedScene.Platform;
+                            else
+                                scene--;
+                            return;
+                        }
+                        if(button.Key.name.Equals("Exit"))
+                        {
+                            Application.Quit();
+                            return;
+                        }
+                        switch(scene)
+                            {
+                                case LoadedScene.Static:
+                                    SceneManager.LoadScene("Assets/scenes/Static Scene.unity");
+                                    break;
+                                case LoadedScene.Dynamic:
+                                    SceneManager.LoadScene("Assets/scenes/Dynamic Scene.unity");
+                                    break;
+                                case LoadedScene.Platform:
+                                    SceneManager.LoadScene("Assets/scenes/Platform Scene.unity");
+                                    break;
+                            }
                     }
-            //SceneManager.UnloadSceneAsync("Assets/scenes/Menu.unity");
         }
     }
     IEnumerator Wait()

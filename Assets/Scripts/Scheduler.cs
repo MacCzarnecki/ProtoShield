@@ -9,7 +9,7 @@ public class Scheduler : MonoBehaviour
 {
 
     [Serializable]
-    public struct Json 
+    public struct CSV 
     {
         public float time;
         public float angle;
@@ -17,7 +17,7 @@ public class Scheduler : MonoBehaviour
     }
 
     public GameObject _countdown;
-    private List<Json> SavedData;
+    private List<CSV> SavedData;
     public GameObject _player;
 
     public GameObject LeftClick_Tutorial;
@@ -54,7 +54,7 @@ public class Scheduler : MonoBehaviour
     private GameObject endMenu;
     void Awake()
     {
-        SavedData = new List<Json>();
+        SavedData = new List<CSV>();
         countdownStart = 0.0f;
         isEnd = false;
         countdown = Instantiate(_countdown, new Vector3(0.0f, 1.5f, 0.0f), Quaternion.identity).GetComponent<Animator>();
@@ -113,10 +113,8 @@ public class Scheduler : MonoBehaviour
             Destroy(platform);
             Destroy(enemy);
             if(SceneParameters.isDemo)
-        {
-            if(SceneParameters.ShieldDegrees != 15)
-                SceneParameters.ShieldDegrees -= 5;
-        }
+                if(SceneParameters.ShieldDegrees != 15)
+                    SceneParameters.ShieldDegrees -= 5;
             isEnd = true;
         }
         else if(player == null || player.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "Death")
@@ -171,16 +169,13 @@ public class Scheduler : MonoBehaviour
 
         if (!File.Exists(path))
         {
-            var firstLine = "Angle, Time, Shield_Angle" + Environment.NewLine;
+            var firstLine = "Angle; Time; Shield_Angle" + Environment.NewLine;
             File.WriteAllText(path, firstLine);
         }
 
-        //writer.Write("Angle, Time, Shield Angle");
-        //writer.Write(System.Environment.NewLine);
-
-        foreach(Json json in SavedData)
+        foreach(CSV csv in SavedData)
         {
-            var line = String.Format("{0}, {1}, {2}", json.angle.ToString("0.00").Replace(',','.'), json.time.ToString("0.00000").Replace(',','.'), json.shieldAngle) + Environment.NewLine;
+            var line = String.Format("{0}; {1}; {2}", csv.angle.ToString("0.00"), csv.time.ToString("0.00000"), csv.shieldAngle) + Environment.NewLine;
             File.AppendAllText(path, line);
         }
     }
@@ -201,8 +196,6 @@ public class Scheduler : MonoBehaviour
         
         enemy = Instantiate(turret, new Vector3(x, y, 0), Quaternion.identity);
         enemy.GetComponent<Aim>().player = player;
-        //enemies.Add(Instantiate(turret, new Vector3(x, y, 0), Quaternion.identity));
-        //enemies[enemies.Count - 1].GetComponent<Aim>().player = player;
 
         Vector2 shieldAngle = player.GetComponentInChildren<PolygonCollider2D>().bounds.center - player.transform.position;
 
@@ -211,7 +204,6 @@ public class Scheduler : MonoBehaviour
         Vector2 difference = enemyAngle - shieldAngle;
 
         distanceAngle.Add(Vector2.Angle(shieldAngle, difference));
-        
     }
 
     void onClick()
@@ -219,7 +211,7 @@ public class Scheduler : MonoBehaviour
 
         if(enemy != null && enemy.GetComponent<Aim>().onBlock)
         {
-            SavedData.Add(new Json
+            SavedData.Add(new CSV
             {
                 time = Time.time - countdownStart,
                 angle = distanceAngle[distanceAngle.Count - 1],

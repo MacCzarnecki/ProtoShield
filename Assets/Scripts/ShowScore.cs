@@ -24,7 +24,7 @@ public class ShowScore : MonoBehaviour
         if(!SceneParameters.isDemo || SceneParameters.ShieldDegrees == 15)
             ContinueButton.SetActive(false);
     }
-    public void RenderText(List<Scheduler.Json> _list)
+    public void RenderText(List<Scheduler.CSV> _list)
     {
         for(int i = 0; i < _list.Count; i++)
         {

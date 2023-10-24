@@ -10,7 +10,7 @@ public class PlatformScheduler : MonoBehaviour
 
 
     public GameObject _countdown;
-    private List<Scheduler.Json> SavedData;
+    private List<Scheduler.CSV> SavedData;
     public GameObject _player;
 
     private  List<GameObject> turrets;
@@ -51,7 +51,7 @@ public class PlatformScheduler : MonoBehaviour
     void Awake()
     {
         isTurretActive = false;
-        SavedData = new List<Scheduler.Json>();
+        SavedData = new List<Scheduler.CSV>();
         countdownStart = 0.0f;
         isEnd = false;
         countdown = Instantiate(_countdown, new Vector3(0.0f, 1.5f, 0.0f), Quaternion.identity).GetComponent<Animator>();
@@ -90,7 +90,7 @@ public class PlatformScheduler : MonoBehaviour
     }
     void Update()
     {
-        if(playerHealth > player.GetComponent<PlayerController>().currentHealth)
+        if(player != null && playerHealth > player.GetComponent<PlayerController>().currentHealth)
         {
             playerHealth = player.GetComponent<PlayerController>().currentHealth;
             isTurretActive = false;
@@ -128,13 +128,19 @@ public class PlatformScheduler : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(distanceAngle.Count != 0 && countdownStart != 0.0f)
+        if(distanceAngle.Count != 0 && isTurretActive)
             currentTime = (Time.time - countdownStart).ToString() + " s\nDistance angle: " + distanceAngle[distanceAngle.Count-1];
 
         if(endMenu != null)
         {
             FadeLightning();
             return;
+        }   
+
+        if((Time.time - countdownStart) >= 2.0f)
+        {
+            countdownStart = 0.0f;
+            isTurretActive = false;
         }
 
         if(countdown.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f) return;
@@ -195,16 +201,16 @@ public class PlatformScheduler : MonoBehaviour
 
             if (!File.Exists(path))
             {
-                var firstLine = "Angle, Time, Shield_Angle" + Environment.NewLine;
+                var firstLine = "Angle; Time; Shield_Angle" + Environment.NewLine;
                 File.WriteAllText(path, firstLine);
             }
 
             //writer.Write("Angle, Time, Shield Angle");
             //writer.Write(System.Environment.NewLine);
 
-            foreach(Scheduler.Json json in SavedData)
+            foreach(Scheduler.CSV csv in SavedData)
             {
-                var line = String.Format("{0}, {1}, {2}", json.angle.ToString("0.00").Replace(',','.'), json.time.ToString("0.00000").Replace(',','.'), json.shieldAngle) + Environment.NewLine;
+                var line = String.Format("{0}; {1}; {2}", csv.angle.ToString("0.00"), csv.time.ToString("0.00000"), csv.shieldAngle) + Environment.NewLine;
                 File.AppendAllText(path, line);
             }
         }
@@ -227,7 +233,7 @@ public class PlatformScheduler : MonoBehaviour
             if(turrets[i] != null && (turrets[i].GetComponent<Aim>().onBlock && turrets[i].GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length != 0 && turrets[i].GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "Firing"))
                 {
                     isTurretActive = false;
-                    SavedData.Add(new Scheduler.Json
+                    SavedData.Add(new Scheduler.CSV
                     {
                         time = Time.time - countdownStart,
                         angle = distanceAngle[distanceAngle.Count - 1],
